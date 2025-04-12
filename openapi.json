@@ -1,0 +1,6031 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "description": "&lt;h4&gt;Authentication.&lt;/h4&gt;\n&lt;p&gt;Authentication is done with X-API-KEY. You can request a key via mail to api@cargoboard.com.",
+    "version": "1.0.5",
+    "contact": {
+      "name": "Cargoboard Admin",
+      "url": "https://cargoboard.com/",
+      "email": "api@cargoboard.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.cargoboard.com",
+      "description": "api-sandbox.cargoboard.com"
+    },
+    {
+      "url": "https://api.cargoboard.com",
+      "description": "api.cargoboard.com"
+    }
+  ],
+  "paths": {
+    "/v1/quotations": {
+      "post": {
+        "operationId": "place-a-quotation",
+        "summary": "Place a Quotation",
+        "description": "This endpoint is used to place a Quotation for a shipment.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuotation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quotation has been successfully placed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCreateQuotation"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Quotations"
+        ]
+      },
+      "get": {
+        "operationId": "get-quotations",
+        "summary": "Get quotations",
+        "description": "This endpoint is used to Get quotations.",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Quantity of quotations to take",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for next page of quotations",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order results by properties",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "sequence"
+              ]
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter results by properties",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filterOperator",
+            "in": "query",
+            "description": "Filter operator. Possible values [AND, OR]",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "AND"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "description": "Get total quantity of quotations",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer quotations fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetQuotations"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Customer cannot be found"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Quotations"
+        ]
+      }
+    },
+    "/v1/quotations/{id}": {
+      "get": {
+        "operationId": "get-a-quotation",
+        "summary": "Get a Quotation",
+        "description": "Authorization with x-api-key.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quotation"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Quotations"
+        ]
+      }
+    },
+    "/v1/quotations/{id}/book": {
+      "post": {
+        "operationId": "book-an-order-based-on-a-quotation",
+        "summary": "Book an Order Based on a Quotation",
+        "description": "This endpoint is used to Book an Order Based on a Quotation.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quotation has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCreateOrder"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Quotations"
+        ]
+      }
+    },
+    "/v1/orders": {
+      "post": {
+        "operationId": "place-an-order",
+        "summary": "Place an Order",
+        "description": "Authorization with customer token (XApiKey) or user token (Bearer). Orders placed on this endpoint need confirmation for authorization different than wih XApiKey that is customers tokenApi.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order has been successfully placed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCreateOrder"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      },
+      "get": {
+        "operationId": "get-orders",
+        "summary": "Get orders",
+        "description": "This endpoint is used to Get orders.",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Quantity of orders to take",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for next page of orders",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order results by properties",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "sequence"
+              ]
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter results by properties",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filterOperator",
+            "in": "query",
+            "description": "Filter operator. Possible values [AND, OR]",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "AND"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "description": "Get total quantity of orders",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer orders fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetOrdersForCustomer"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Customer cannot be found"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}": {
+      "get": {
+        "operationId": "get-an-order",
+        "summary": "Get an Order",
+        "description": "Authorization with x-api-key.",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "CUID or reference of order",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}/cancel": {
+      "post": {
+        "operationId": "cancel-an-order",
+        "summary": "Cancel an Order",
+        "description": "Authorization with customer token (XApiKey) or user token (Bearer). Header x-api-key required as cancellation token. For value of id parameter, CUID or reference of order are accepted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Order cancellation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCancelOrder"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Order cannot be cancelled due to its current state."
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}/print-shipment-labels": {
+      "get": {
+        "operationId": "print-shipment-label-for-an-order",
+        "summary": "Print shipment label for an Order",
+        "description": "Authorization with customer token (XApiKey) or user token (Bearer). For value of id parameter, CUID or reference of order are accepted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of document",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "A4",
+                "A6"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders confirmation shipment labels pdf stream successfully delivered",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order cannot be found"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}/print-confirmation": {
+      "get": {
+        "operationId": "print-confirmation-for-an-order",
+        "summary": "Print confirmation for an Order",
+        "description": "Authorization with customer token (XApiKey) or user token (Bearer). For value of id parameter, CUID or reference of order are accepted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders confirmation pdf stream successfully delivered",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order cannot be found"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v1/invoices": {
+      "get": {
+        "operationId": "get-invoices",
+        "summary": "Get invoices",
+        "description": "This endpoint is used to Get invoices.",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Quantity of Easybill invoices to take",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "example": 50
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for next page of Easybill invoices",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order results by properties",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "sequence"
+              ]
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter results by properties For example, postCodeFrom=\"33100\"",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "description": "Get total quantity of easybill invoices",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer invoices fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindManyEasybillInvoicesResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Customer cannot be found"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/v1/invoices/{id}/pdf": {
+      "get": {
+        "operationId": "prints-invoice-pdf-document",
+        "summary": "Prints invoice pdf document",
+        "description": "Authorization with API_CARGOBOARD_TOKEN OR JWT Token.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Easybill Invoice pdf stream successfully delivered",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "EasybillInvoice pdf could not be delivered."
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/v1/orders/{id}/tracking": {
+      "get": {
+        "operationId": "get-tracking-information-for-an-order",
+        "summary": "Get tracking information for an Order",
+        "description": "Authorization with customer token (XApiKey) or user token (Bearer). For value of id parameter, CUID or reference of order are accepted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Return tracking information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetTrackingData"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Referenced order could not found"
+          },
+          "409": {
+            "description": "Authorized user is not a customer"
+          }
+        },
+        "security": [
+          {
+            "X-API-KEY": []
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ContactPerson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Gal Anonymous"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+4917287502631"
+          },
+          "email": {
+            "type": "string",
+            "example": "orders@not-existing-company.com"
+          }
+        }
+      },
+      "AddressQuotation": {
+        "type": "object",
+        "properties": {
+          "postCode": {
+            "type": "string",
+            "example": "10115"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "DE",
+            "enum": [
+              "AL",
+              "AT",
+              "BE",
+              "BG",
+              "CH",
+              "CZ",
+              "DE",
+              "DK",
+              "EE",
+              "ES",
+              "FI",
+              "FR",
+              "GB",
+              "GR",
+              "HR",
+              "HU",
+              "IE",
+              "IT",
+              "LI",
+              "LT",
+              "LU",
+              "LV",
+              "NL",
+              "NO",
+              "PL",
+              "PT",
+              "RO",
+              "RS",
+              "SE",
+              "SI",
+              "SK",
+              "TR"
+            ]
+          },
+          "street": {
+            "type": "string",
+            "example": "Not existing company GmbH"
+          },
+          "city": {
+            "type": "string",
+            "example": "Berlin"
+          }
+        },
+        "required": [
+          "postCode",
+          "countryCode"
+        ]
+      },
+      "NeutralData": {
+        "type": "object",
+        "properties": {
+          "postCode": {
+            "type": "string",
+            "example": "10115"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "DE",
+            "enum": [
+              "AL",
+              "AT",
+              "BE",
+              "BG",
+              "CH",
+              "CZ",
+              "DE",
+              "DK",
+              "EE",
+              "ES",
+              "FI",
+              "FR",
+              "GB",
+              "GR",
+              "HR",
+              "HU",
+              "IE",
+              "IT",
+              "LI",
+              "LT",
+              "LU",
+              "LV",
+              "NL",
+              "NO",
+              "PL",
+              "PT",
+              "RO",
+              "RS",
+              "SE",
+              "SI",
+              "SK",
+              "TR"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "example": "Fake Company"
+          },
+          "street": {
+            "type": "string",
+            "example": "Friedrichstraße 1"
+          },
+          "city": {
+            "type": "string",
+            "example": "Berlin"
+          }
+        },
+        "required": [
+          "postCode",
+          "countryCode",
+          "name",
+          "street",
+          "city"
+        ]
+      },
+      "ShipperQuotation": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Cargoboard GmbH"
+          },
+          "contactPerson": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressQuotation"
+          },
+          "neutralData": {
+            "description": "Neutral data for obfuscation.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NeutralData"
+              }
+            ]
+          },
+          "pickupAtFrom": {
+            "description": "Date with time of start of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "pickupAtUntil": {
+            "description": "Date with time of end of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T16:00:00Z"
+          },
+          "pickupOn": {
+            "description": "Date without time of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date",
+            "example": "2023-07-18"
+          },
+          "wantsContactBeforePickup": {
+            "description": "A service where a Logistic Company contacts the customer by phone days/hours before the pickup and arranges an appointment for the pickup. This is often booked when a customer is not on site every time and needs an exact time.",
+            "type": "boolean"
+          },
+          "wantsPhoneCallFromDriverBeforePickup": {
+            "description": "A service where a Logistic Company contacts the customer by phone about 30 - 60 minutes before pickup at the customer location to pickup the shipment.",
+            "type": "boolean"
+          },
+          "wantsTailLiftTruck": {
+            "description": "Wants Tail Lift Truck.",
+            "type": "boolean"
+          },
+          "loadingType": {
+            "description": "Loading type (collection). Possible values RAMP, SIDE, CRANE, LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK",
+            "type": "string",
+            "example": "LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK"
+          },
+          "freeTextForPickup": {
+            "type": "string",
+            "example": "Free text for pickup."
+          },
+          "reference": {
+            "type": "string",
+            "example": "XYZ123"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "ConsigneeQuotation": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Cargoboard GmbH"
+          },
+          "contactPerson": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressQuotation"
+          },
+          "neutralData": {
+            "description": "Neutral data for obfuscation.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NeutralData"
+              }
+            ]
+          },
+          "isPrivateCustomer": {
+            "description": "Consignee is private customer.",
+            "type": "boolean",
+            "example": false
+          },
+          "wantsContactBeforeDelivery": {
+            "description": "A service where a Logistic Company contacts the customer by phone days/hours before the delivery and arranges an appointment for the delivery. This is often booked when a customer is not on site every time and needs an exact time.",
+            "type": "boolean",
+            "example": false
+          },
+          "wantsPhoneCallFromDriverBeforeDelivery": {
+            "description": "A service where a Logistic Company contacts the customer by phone about 30 - 60 minutes before arriving at the customer location to deliver the shipment.",
+            "type": "boolean"
+          },
+          "wantsDeliveryWithoutConsigneePresence": {
+            "description": "A service where delivery will not require consignee presence.",
+            "type": "boolean"
+          },
+          "wantsTailLiftTruck": {
+            "description": "Wants Tail Lift Truck.",
+            "type": "boolean"
+          },
+          "freeTextForDelivery": {
+            "type": "string",
+            "example": "Free text for delivery."
+          },
+          "reference": {
+            "description": "Reference number of the consignee. Driver will use this reference to notify the consignee.",
+            "type": "string",
+            "example": "XYZ123"
+          },
+          "deliveryOn": {
+            "description": "Date of delivery for fix product. Allowed delivery dates from Monday till Friday.",
+            "type": "string",
+            "format": "date",
+            "example": "2023-07-18"
+          },
+          "unloadingType": {
+            "description": "Unloading type (delivery). Possible values RAMP, SIDE, CRANE, LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK",
+            "type": "string",
+            "example": "LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "DangerousGoodQuotation": {
+        "type": "object",
+        "properties": {
+          "unNo": {
+            "type": "string",
+            "example": "3480"
+          },
+          "substanceName": {
+            "type": "string",
+            "example": "LITHIUM-IONEN-BATTERIEN"
+          },
+          "packageQuantity": {
+            "type": "integer",
+            "example": 1
+          },
+          "packageType": {
+            "type": "string",
+            "example": "Kiste"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 1
+          },
+          "weightGross": {
+            "type": "integer",
+            "example": 11
+          },
+          "weightNetOrVolume": {
+            "type": "integer",
+            "example": 9
+          },
+          "weightNetOrVolumeUnit": {
+            "type": "string",
+            "example": "NGW"
+          },
+          "riskAdditional1": {
+            "type": "string",
+            "example": "First additional risk is..."
+          },
+          "riskMain": {
+            "type": "string",
+            "example": "9A"
+          },
+          "pointsTotal": {
+            "type": "integer",
+            "example": 27
+          },
+          "pointsMultiplier": {
+            "type": "integer",
+            "example": 3
+          },
+          "adrVersion": {
+            "type": "string",
+            "example": "ADR2023"
+          },
+          "classificationCode": {
+            "type": "string",
+            "example": "M4"
+          },
+          "packagingGroup": {
+            "type": "string",
+            "example": null
+          },
+          "isExemptedQuantity": {
+            "type": "boolean",
+            "example": false
+          },
+          "isLimitedQuantity": {
+            "type": "boolean",
+            "example": false
+          },
+          "isHighConsequencesDangerousGood": {
+            "type": "boolean",
+            "example": false
+          },
+          "technicalNameForNotOtherwiseSpecifiedSubstances": {
+            "type": "string",
+            "example": "N.O.S."
+          },
+          "netExplosiveMass": {
+            "type": "integer",
+            "example": 5
+          },
+          "transportCategory": {
+            "type": "string",
+            "example": "2"
+          },
+          "tunnelRestriction": {
+            "description": "Tunnel restriction",
+            "type": "string",
+            "example": "(E)"
+          }
+        }
+      },
+      "LineQuotation": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "description": "Content for the line.",
+            "example": "Tyres",
+            "type": "string"
+          },
+          "unitQuantity": {
+            "description": "Quantity for the line.",
+            "type": "integer",
+            "example": 3
+          },
+          "unitPackageType": {
+            "description": "PackageType for the line.",
+            "type": "string",
+            "enum": [
+              "EP",
+              "KT",
+              "PA",
+              "CC",
+              "FP",
+              "GB",
+              "KI",
+              "PARTIE",
+              "DIRECT_PKW",
+              "DIRECT_BUS",
+              "DIRECT_BUS_PLANE",
+              "DIRECT_BUS_PLANE_TL",
+              "DIRECT_BUS_PLANE_XXL",
+              "DIRECT_BUS_PLANE_XXL_TL",
+              "DIRECT_TRUCK_7_5",
+              "DIRECT_TRUCK_12",
+              "DIRECT_TRUCK_40",
+              "DIRECT_BUS_TL",
+              "DIRECT_TRUCK_7_5_TL",
+              "DIRECT_TRUCK_12_TL"
+            ]
+          },
+          "unitLength": {
+            "description": "Length for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitWidth": {
+            "description": "Width for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitHeight": {
+            "description": "Height for the line.",
+            "type": "integer",
+            "example": 120
+          },
+          "unitWeight": {
+            "description": "Weight for the line.",
+            "type": "number",
+            "example": 12.4
+          },
+          "isStackable": {
+            "description": "If set to true, packages are loadable and stackable.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsPalletExchange": {
+            "description": "If set to true, pallets exchange is required for a line.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "additionalEuroPallets": {
+            "description": "Additional euro Pallets for the line (e.g. as top or side protection).",
+            "type": "number",
+            "example": 3
+          },
+          "dangerousGoods": {
+            "description": "Dangerous Goods for a quotation line.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGoodQuotation"
+            }
+          }
+        },
+        "required": [
+          "content",
+          "unitQuantity",
+          "unitPackageType",
+          "unitLength",
+          "unitWidth",
+          "unitHeight",
+          "unitWeight"
+        ]
+      },
+      "Function": {
+        "type": "object"
+      },
+      "CostItemQuotation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Cost item type. Possible values: DANGEROUS_GOODS, PRIVATE_CUSTOMER, IMPORT_DUTIES, CONTACT_BEFORE_PICKUP, TAIL_LIFT_TRUCK, PREMIUM_DELIVERY, CONTACT_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, DELIVERY_WITHOUT_CONSIGNEE_PRESENCE, TRANSPORT_INSURANCE, EXPORT_DECLARATION, ADDITIONAL_PRODUCTS, PALLET_EXCHANGE, CLIMATE_NEUTRAL_SURCHARGE, SHIPMENT, GENERAL_MARGIN, CUSTOMIZED_MARGIN, ACTUAL_COST_CORRECTION, FUEL_SURCHARGE, CUSTOMER_DISCOUNT, COUPON.",
+            "type": "string",
+            "example": "SHIPMENT",
+            "enum": [
+              "DANGEROUS_GOODS",
+              "PRIVATE_CUSTOMER",
+              "IMPORT_DUTIES",
+              "CONTACT_BEFORE_PICKUP",
+              "TAIL_LIFT_TRUCK",
+              "PREMIUM_DELIVERY",
+              "CONTACT_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "DELIVERY_WITHOUT_CONSIGNEE_PRESENCE",
+              "TRANSPORT_INSURANCE",
+              "EXPORT_DECLARATION",
+              "ADDITIONAL_PRODUCTS",
+              "PALLET_EXCHANGE",
+              "CLIMATE_NEUTRAL_SURCHARGE",
+              "SHIPMENT",
+              "GENERAL_MARGIN",
+              "CUSTOMIZED_MARGIN",
+              "ACTUAL_COST_CORRECTION",
+              "FUEL_SURCHARGE",
+              "CUSTOMER_DISCOUNT",
+              "COUPON"
+            ]
+          },
+          "subtype": {
+            "description": "Cost item subtype. Possible values: PICKUP_ADVISE, DELIVERY_ADVISE, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, TAIL_LIFT, TAIL_LIFT_PICKUP, TAIL_LIFT_DELIVERY, DELIVERY_WHITOUT_CONSIGNEE_PRESENCE, PREMIUM_DELIVERY, PRIVATE_CONSIGNEE, EXPRESS_16, EXPRESS_12, EXPRESS_10, EXPRESS_8, FIX_16, FIX_12, FIX_10, FIX_8, PICKUP_BEFORE_12, PICKUP_AFTER_12, DELIVERY_BEFORE_12, DELIVERY_AFTER_12, EXPORT_DECLARATION, IMPORT_DECLARATION.",
+            "type": "string",
+            "example": "PICKUP_ADVISE",
+            "enum": [
+              "PICKUP_ADVISE",
+              "DELIVERY_ADVISE",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "TAIL_LIFT",
+              "TAIL_LIFT_PICKUP",
+              "TAIL_LIFT_DELIVERY",
+              "DELIVERY_WHITOUT_CONSIGNEE_PRESENCE",
+              "PREMIUM_DELIVERY",
+              "PRIVATE_CONSIGNEE",
+              "EXPRESS_16",
+              "EXPRESS_12",
+              "EXPRESS_10",
+              "EXPRESS_8",
+              "FIX_16",
+              "FIX_12",
+              "FIX_10",
+              "FIX_8",
+              "PICKUP_BEFORE_12",
+              "PICKUP_AFTER_12",
+              "DELIVERY_BEFORE_12",
+              "DELIVERY_AFTER_12",
+              "EXPORT_DECLARATION",
+              "IMPORT_DECLARATION"
+            ]
+          },
+          "description": {
+            "description": "Description for cost item.",
+            "type": "string",
+            "example": "Cost item."
+          },
+          "sellPrice": {
+            "type": "number",
+            "example": 2
+          },
+          "currency": {
+            "description": "Currency for price. Possible values: EUR.",
+            "type": "string",
+            "example": "EUR",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "isOnCustomerInvoice": {
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "easybillInvoiceId": {
+            "type": "string",
+            "example": "cl267eg9r000009mqgixia7hh"
+          },
+          "vat": {
+            "type": "number",
+            "example": 2
+          },
+          "cost": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "required": [
+          "type",
+          "subtype",
+          "description",
+          "sellPrice",
+          "currency",
+          "isOnCustomerInvoice",
+          "easybillInvoiceId",
+          "vat",
+          "cost"
+        ]
+      },
+      "Quotation": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "description": "The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "transportType": {
+            "description": "Transport type of order. Possible values GROUPAGE, PART_LOAD, DIRECT",
+            "type": "string",
+            "example": "PART_LOAD"
+          },
+          "customerOrderCode": {
+            "description": "A code applied by customer that will appear on documents as CustomerOrderNo",
+            "type": "string",
+            "example": "XYZ-1568788"
+          },
+          "couponCode": {
+            "description": "A code applied by customer that will allow for special actions like discount etc.",
+            "type": "string",
+            "example": "CARGOBOARD-WELCOME-123"
+          },
+          "wantsExportDeclaration": {
+            "description": "A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsClimateNeutralShipment": {
+            "description": "Negative environmental impact will be reduced for this service.",
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "wantsInsurance": {
+            "description": "Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance",
+            "type": "boolean",
+            "example": true,
+            "default": false
+          },
+          "incoterm": {
+            "description": "Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP",
+            "type": "string",
+            "example": "STANDARD",
+            "enum": [
+              "STANDARD",
+              "DAP_CLEARED",
+              "DAP_UNCLEARED"
+            ]
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/ShipperQuotation"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/ConsigneeQuotation"
+          },
+          "valueOfGoodsAmount": {
+            "description": "Amount of money - value of goods for insurance or customs",
+            "type": "number",
+            "example": 30
+          },
+          "valueOfGoodsCurrency": {
+            "description": "Currency of value of goods. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "lines": {
+            "description": "Line for a product.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineQuotation"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of order. Possible values INITIALIZED, CREATED, CANCELLED",
+            "type": "string",
+            "example": "INITIALIZED"
+          },
+          "customerId": {
+            "description": "Id of customer.",
+            "type": "string"
+          },
+          "sequence": {
+            "description": "Sequence of quotation.",
+            "type": "number"
+          },
+          "orderId": {
+            "description": "Id of order.",
+            "type": "string"
+          },
+          "quotationIdEikona": {
+            "description": "Quotation id eikona",
+            "type": "string",
+            "example": "123"
+          },
+          "runtimeDaysMin": {
+            "description": "Runtime days minimum.",
+            "type": "number",
+            "example": 3
+          },
+          "runtimeDaysMax": {
+            "description": "Runtime days maximum.",
+            "type": "number",
+            "example": 6
+          },
+          "priceAmount": {
+            "description": "Price amount.",
+            "type": "number",
+            "example": 10
+          },
+          "priceCurrency": {
+            "description": "Status of order. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "priceAmountStandard": {
+            "description": "Price amount standard.",
+            "type": "number",
+            "example": 12
+          },
+          "priceCurrencyStandard": {
+            "description": "Price currency standard. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "placedAt": {
+            "description": "Date of order placement",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.549Z"
+          },
+          "createdAt": {
+            "description": "Date of creation of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.549Z"
+          },
+          "updatedAt": {
+            "description": "Date of update of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.549Z"
+          },
+          "truckType": {
+            "description": "Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40",
+            "type": "string",
+            "example": "DIRECT_BUS_PLANE"
+          },
+          "domain": {
+            "description": "Domain",
+            "type": "string",
+            "example": "api.cargoboard.com"
+          },
+          "shippingPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "deliveringPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "linesWeight": {
+            "description": "Lines weight of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesVolume": {
+            "description": "Lines volume of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesPalletBays": {
+            "description": "Lines pallet bays of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesLoadingMeter": {
+            "description": "Lines loading meter of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "quantityOfEuroPallets": {
+            "description": "Quantity of euro pallets from lines.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ]
+          },
+          "co2EmissionAmount": {
+            "description": "CO2 Emission amount of quotation.",
+            "type": "number"
+          },
+          "co2EmissionValue": {
+            "description": "CO2 Emission value of quotation.",
+            "type": "number"
+          },
+          "co2EmissionUnit": {
+            "description": "CO2 Emission unit of quotation.",
+            "type": "string",
+            "example": 10
+          },
+          "shipmentCost": {
+            "description": "Shipment cost of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "actualCost": {
+            "description": "Actual cost of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "actualPrice": {
+            "description": "Actual price of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "actualPriceStandard": {
+            "description": "Actual standard price of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "costItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostItemQuotation"
+            }
+          }
+        },
+        "required": [
+          "product",
+          "shipper",
+          "consignee",
+          "lines",
+          "quantityOfEuroPallets"
+        ]
+      },
+      "HateoasLink": {
+        "type": "object",
+        "properties": {
+          "rel": {
+            "description": "Relation name",
+            "type": "string"
+          },
+          "method": {
+            "description": "Http method like: GET, POST, PUT, DELETE.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description for link.",
+            "type": "string"
+          },
+          "href": {
+            "description": "Href for relation.",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseGetQuotations": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Quotations.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Quotation"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          },
+          "total": {
+            "description": "Total number of quotations.",
+            "type": "number"
+          }
+        }
+      },
+      "CreateQuotation": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "description": "The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/ShipperQuotation"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/ConsigneeQuotation"
+          },
+          "lines": {
+            "description": "Line for a product.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineQuotation"
+            }
+          },
+          "customerOrderCode": {
+            "description": "A code applied by customer that will appear on documents as CustomerOrderNo",
+            "type": "string",
+            "example": "XYZ-1568788"
+          },
+          "couponCode": {
+            "description": "A code applied by customer that will allow for special actions like discount etc.",
+            "type": "string",
+            "example": "CARGOBOARD-WELCOME-123"
+          },
+          "wantsExportDeclaration": {
+            "description": "A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsClimateNeutralShipment": {
+            "description": "Negative environmental impact will be reduced for this service.",
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "wantsInsurance": {
+            "description": "Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance",
+            "type": "boolean",
+            "example": true,
+            "default": false
+          },
+          "valueOfGoodsAmount": {
+            "description": "Amount of money - value of goods for insurance or customs",
+            "type": "number",
+            "example": 3000
+          },
+          "valueOfGoodsCurrency": {
+            "description": "Currency of value of goods. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "incoterm": {
+            "description": "Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP",
+            "type": "string",
+            "example": "STANDARD",
+            "enum": [
+              "STANDARD",
+              "DAP_CLEARED",
+              "DAP_UNCLEARED"
+            ]
+          }
+        },
+        "required": [
+          "product",
+          "shipper",
+          "consignee",
+          "lines"
+        ]
+      },
+      "Delivery": {
+        "type": "object",
+        "properties": {
+          "earliest": {
+            "description": "Earliest date for delivery.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "latest": {
+            "description": "Latest date for delivery.",
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "earliest",
+          "latest"
+        ]
+      },
+      "ResponseGetQuotation": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Quotation.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Quotation"
+              }
+            ]
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          }
+        }
+      },
+      "Price": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "description": "Amount for price.",
+            "type": "number"
+          },
+          "currency": {
+            "description": "Currency for price. Possible values: EUR.",
+            "type": "string",
+            "example": "EUR",
+            "enum": [
+              "EUR"
+            ]
+          }
+        }
+      },
+      "Runtime": {
+        "type": "object",
+        "properties": {
+          "daysMin": {
+            "description": "Minimum days for runtime.",
+            "type": "number"
+          },
+          "daysMax": {
+            "description": "Maximum days for runtime.",
+            "type": "number"
+          }
+        }
+      },
+      "CostItemProduct": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "description": "Description for cost item.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Cost item type. Possible values: DANGEROUS_GOODS, PRIVATE_CUSTOMER, IMPORT_DUTIES, CONTACT_BEFORE_PICKUP, TAIL_LIFT_TRUCK, PREMIUM_DELIVERY, CONTACT_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, DELIVERY_WITHOUT_CONSIGNEE_PRESENCE, TRANSPORT_INSURANCE, EXPORT_DECLARATION, ADDITIONAL_PRODUCTS, PALLET_EXCHANGE, CLIMATE_NEUTRAL_SURCHARGE, SHIPMENT, GENERAL_MARGIN, CUSTOMIZED_MARGIN, ACTUAL_COST_CORRECTION, FUEL_SURCHARGE, CUSTOMER_DISCOUNT, COUPON.",
+            "type": "string",
+            "example": "SHIPMENT",
+            "enum": [
+              "DANGEROUS_GOODS",
+              "PRIVATE_CUSTOMER",
+              "IMPORT_DUTIES",
+              "CONTACT_BEFORE_PICKUP",
+              "TAIL_LIFT_TRUCK",
+              "PREMIUM_DELIVERY",
+              "CONTACT_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "DELIVERY_WITHOUT_CONSIGNEE_PRESENCE",
+              "TRANSPORT_INSURANCE",
+              "EXPORT_DECLARATION",
+              "ADDITIONAL_PRODUCTS",
+              "PALLET_EXCHANGE",
+              "CLIMATE_NEUTRAL_SURCHARGE",
+              "SHIPMENT",
+              "GENERAL_MARGIN",
+              "CUSTOMIZED_MARGIN",
+              "ACTUAL_COST_CORRECTION",
+              "FUEL_SURCHARGE",
+              "CUSTOMER_DISCOUNT",
+              "COUPON"
+            ]
+          },
+          "subtype": {
+            "description": "Cost item subtype. Possible values: PICKUP_ADVISE, DELIVERY_ADVISE, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, TAIL_LIFT, TAIL_LIFT_PICKUP, TAIL_LIFT_DELIVERY, DELIVERY_WHITOUT_CONSIGNEE_PRESENCE, PREMIUM_DELIVERY, PRIVATE_CONSIGNEE, EXPRESS_16, EXPRESS_12, EXPRESS_10, EXPRESS_8, FIX_16, FIX_12, FIX_10, FIX_8, PICKUP_BEFORE_12, PICKUP_AFTER_12, DELIVERY_BEFORE_12, DELIVERY_AFTER_12, EXPORT_DECLARATION, IMPORT_DECLARATION.",
+            "type": "string",
+            "example": "PICKUP_ADVISE",
+            "enum": [
+              "PICKUP_ADVISE",
+              "DELIVERY_ADVISE",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "TAIL_LIFT",
+              "TAIL_LIFT_PICKUP",
+              "TAIL_LIFT_DELIVERY",
+              "DELIVERY_WHITOUT_CONSIGNEE_PRESENCE",
+              "PREMIUM_DELIVERY",
+              "PRIVATE_CONSIGNEE",
+              "EXPRESS_16",
+              "EXPRESS_12",
+              "EXPRESS_10",
+              "EXPRESS_8",
+              "FIX_16",
+              "FIX_12",
+              "FIX_10",
+              "FIX_8",
+              "PICKUP_BEFORE_12",
+              "PICKUP_AFTER_12",
+              "DELIVERY_BEFORE_12",
+              "DELIVERY_AFTER_12",
+              "EXPORT_DECLARATION",
+              "IMPORT_DECLARATION"
+            ]
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          }
+        },
+        "required": [
+          "description",
+          "type",
+          "subtype",
+          "price"
+        ]
+      },
+      "CO2Emission": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "description": "Amount for CO2 emission.",
+            "type": "number"
+          },
+          "value": {
+            "description": "Value for CO2 emission.",
+            "type": "number"
+          },
+          "unit": {
+            "description": "Unit for CO2 emission.",
+            "type": "string"
+          }
+        }
+      },
+      "QuotationProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The id of product.",
+            "type": "string"
+          },
+          "product": {
+            "description": "The product. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "truckType": {
+            "description": "Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40",
+            "type": "string",
+            "example": "DIRECT_BUS_PLANE",
+            "enum": [
+              "DIRECT_BUS_PLANE",
+              "DIRECT_BUS_PLANE_XXL",
+              "DIRECT_TRUCK_7_5",
+              "DIRECT_TRUCK_12",
+              "DIRECT_TRUCK_40"
+            ]
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "priceStandard": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "pickupOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupAtFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupAtUntil": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "runtime": {
+            "$ref": "#/components/schemas/Runtime"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Delivery"
+          },
+          "costItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostItemProduct"
+            }
+          },
+          "co2Emission": {
+            "description": "CO2Emission details.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CO2Emission"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "product",
+          "price",
+          "priceStandard",
+          "pickupOn",
+          "pickupAtFrom",
+          "pickupAtUntil",
+          "runtime",
+          "delivery",
+          "costItems",
+          "co2Emission"
+        ]
+      },
+      "ResponseCreateQuotation": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/QuotationProduct"
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "FindManyEasybillInvoicesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Public Holidays.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EasybillInvoice"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          },
+          "total": {
+            "description": "Total number of easybill invoices.",
+            "type": "number"
+          }
+        }
+      },
+      "AddressOrder": {
+        "type": "object",
+        "properties": {
+          "postCode": {
+            "type": "string",
+            "example": "10115"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "DE",
+            "enum": [
+              "AL",
+              "AT",
+              "BE",
+              "BG",
+              "CH",
+              "CZ",
+              "DE",
+              "DK",
+              "EE",
+              "ES",
+              "FI",
+              "FR",
+              "GB",
+              "GR",
+              "HR",
+              "HU",
+              "IE",
+              "IT",
+              "LI",
+              "LT",
+              "LU",
+              "LV",
+              "NL",
+              "NO",
+              "PL",
+              "PT",
+              "RO",
+              "RS",
+              "SE",
+              "SI",
+              "SK",
+              "TR"
+            ]
+          },
+          "street": {
+            "type": "string",
+            "example": "Friedrichstraße 1"
+          },
+          "city": {
+            "type": "string",
+            "example": "Berlin"
+          }
+        },
+        "required": [
+          "postCode",
+          "countryCode",
+          "street",
+          "city"
+        ]
+      },
+      "ShipperOrder": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Cargoboard GmbH"
+          },
+          "contactPerson": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressOrder"
+          },
+          "neutralData": {
+            "description": "Neutral data for obfuscation.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NeutralData"
+              }
+            ]
+          },
+          "pickupAtFrom": {
+            "description": "Date with time of start of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "pickupAtUntil": {
+            "description": "Date with time of end of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T16:00:00Z"
+          },
+          "pickupOn": {
+            "description": "Date without time of pickup for the product. Allowed days are days from Monday till Friday. Either pickupOn or pickupAtFrom and pickupAtUntil is enough to be set. If value of pickupOn and pickupAtFrom and pickupAtUntil is set, date part (a day) must be the same.",
+            "type": "string",
+            "format": "date",
+            "example": "2023-07-18"
+          },
+          "wantsContactBeforePickup": {
+            "description": "A service where a Logistic Company contacts the customer by phone days/hours before the pickup and arranges an appointment for the pickup. This is often booked when a customer is not on site every time and needs an exact time.",
+            "type": "boolean"
+          },
+          "wantsPhoneCallFromDriverBeforePickup": {
+            "description": "A service where a Logistic Company contacts the customer by phone about 30 - 60 minutes before pickup to pickup the shipment.",
+            "type": "boolean"
+          },
+          "wantsTailLiftTruck": {
+            "description": "Wants Tail Lift Truck.",
+            "type": "boolean"
+          },
+          "loadingType": {
+            "description": "Loading type (collection). Possible values RAMP, SIDE, CRANE, LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK",
+            "type": "string",
+            "example": "LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK"
+          },
+          "freeTextForPickup": {
+            "type": "string",
+            "example": "Free text for pickup."
+          },
+          "reference": {
+            "type": "string",
+            "example": "XYZ123"
+          }
+        },
+        "required": [
+          "name",
+          "address"
+        ]
+      },
+      "ConsigneeOrder": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Cargoboard GmbH"
+          },
+          "contactPerson": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressOrder"
+          },
+          "neutralData": {
+            "description": "Neutral data for obfuscation.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NeutralData"
+              }
+            ]
+          },
+          "isPrivateCustomer": {
+            "description": "Consignee is private customer.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsContactBeforeDelivery": {
+            "description": "A service where a Logistic Company contacts the customer by phone days/hours before the delivery and arranges an appointment for the delivery. This is often booked when a customer is not on site every time and needs an exact time.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsPhoneCallFromDriverBeforeDelivery": {
+            "description": "A service where a Logistic Company contacts the customer by phone about 30 - 60 minutes before arriving at the customer location to deliver the shipment.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsDeliveryWithoutConsigneePresence": {
+            "description": "A service where delivery will not require consignee presence.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsTailLiftTruck": {
+            "description": "Wants Tail Lift Truck.",
+            "type": "boolean"
+          },
+          "deliveryOn": {
+            "description": "Date of delivery for fix product. Allowed delivery dates from Monday till Friday.",
+            "type": "string",
+            "format": "date",
+            "example": "2023-07-18"
+          },
+          "unloadingType": {
+            "description": "Unloading type (delivery). Possible values RAMP, SIDE, CRANE, LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK",
+            "type": "string",
+            "example": "LIFTING_PLATFORM_OR_TAIL_LIFT_TRUCK"
+          },
+          "freeTextForDelivery": {
+            "type": "string",
+            "example": "Free text for delivery."
+          },
+          "reference": {
+            "type": "string",
+            "example": "XYZ123"
+          }
+        },
+        "required": [
+          "name",
+          "address"
+        ]
+      },
+      "DangerousGoodOrder": {
+        "type": "object",
+        "properties": {
+          "unNo": {
+            "type": "string",
+            "example": "3480"
+          },
+          "substanceName": {
+            "type": "string",
+            "example": "LITHIUM-IONEN-BATTERIEN"
+          },
+          "packageQuantity": {
+            "type": "integer",
+            "example": 1
+          },
+          "packageType": {
+            "type": "string",
+            "example": "Kiste"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 1
+          },
+          "weightGross": {
+            "type": "integer",
+            "example": 11
+          },
+          "weightNetOrVolume": {
+            "type": "integer",
+            "example": 9
+          },
+          "weightNetOrVolumeUnit": {
+            "type": "string",
+            "example": "NGW"
+          },
+          "riskAdditional1": {
+            "type": "string",
+            "example": "First additional risk is..."
+          },
+          "riskMain": {
+            "type": "string",
+            "example": "9A"
+          },
+          "pointsTotal": {
+            "type": "integer",
+            "example": 27
+          },
+          "pointsMultiplier": {
+            "type": "integer",
+            "example": 3
+          },
+          "adrVersion": {
+            "type": "string",
+            "example": "ADR2023"
+          },
+          "classificationCode": {
+            "type": "string",
+            "example": "M4"
+          },
+          "packagingGroup": {
+            "type": "string",
+            "example": null
+          },
+          "isExemptedQuantity": {
+            "type": "boolean",
+            "example": false
+          },
+          "isLimitedQuantity": {
+            "type": "boolean",
+            "example": false
+          },
+          "isHighConsequencesDangerousGood": {
+            "type": "boolean",
+            "example": false
+          },
+          "technicalNameForNotOtherwiseSpecifiedSubstances": {
+            "type": "string",
+            "example": "N.O.S."
+          },
+          "netExplosiveMass": {
+            "type": "integer",
+            "example": 5
+          },
+          "transportCategory": {
+            "type": "string",
+            "example": "2"
+          },
+          "tunnelRestriction": {
+            "description": "Tunnel restriction",
+            "type": "string",
+            "example": "(E)"
+          }
+        }
+      },
+      "CreateLineOrder": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "description": "Content for the line.",
+            "example": "Tyres",
+            "type": "string"
+          },
+          "unitQuantity": {
+            "description": "Quantity for the line.",
+            "type": "integer",
+            "example": 3
+          },
+          "unitPackageType": {
+            "description": "PackageType for the line.",
+            "type": "string",
+            "enum": [
+              "EP",
+              "FP",
+              "GB",
+              "KI",
+              "KT",
+              "PA",
+              "CC",
+              "DIRECT_PKW",
+              "DIRECT_BUS",
+              "DIRECT_BUS_PLANE",
+              "DIRECT_BUS_PLANE_TL",
+              "DIRECT_BUS_PLANE_XXL",
+              "DIRECT_BUS_PLANE_XXL_TL",
+              "DIRECT_TRUCK_7_5",
+              "DIRECT_TRUCK_12",
+              "DIRECT_TRUCK_40",
+              "DIRECT_BUS_TL",
+              "DIRECT_TRUCK_7_5_TL",
+              "DIRECT_TRUCK_12_TL"
+            ]
+          },
+          "unitLength": {
+            "description": "Length for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitWidth": {
+            "description": "Width for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitHeight": {
+            "description": "Height for the line.",
+            "type": "integer",
+            "example": 120
+          },
+          "unitWeight": {
+            "description": "Weight for the line.",
+            "type": "number",
+            "example": 12.4
+          },
+          "isStackable": {
+            "description": "If set to true, packages are loadable and stackable.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsPalletExchange": {
+            "description": "If set to true, pallets exchange is required for a line.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "additionalEuroPallets": {
+            "description": "Additional euro Pallets for the line (e.g. as top or side protection).",
+            "type": "number",
+            "example": 3
+          },
+          "dangerousGoods": {
+            "description": "Dangerous Goods for an order line.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGoodOrder"
+            }
+          }
+        },
+        "required": [
+          "content",
+          "unitQuantity",
+          "unitPackageType",
+          "unitLength",
+          "unitWidth",
+          "unitHeight",
+          "unitWeight"
+        ]
+      },
+      "CreateOrder": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "description": "The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/ShipperOrder"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/ConsigneeOrder"
+          },
+          "lines": {
+            "description": "Line for a product.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateLineOrder"
+            }
+          },
+          "customerOrderCode": {
+            "description": "A code applied by customer that will appear on documents as CustomerOrderNo",
+            "type": "string",
+            "example": "XYZ-1568788"
+          },
+          "couponCode": {
+            "description": "A code applied by customer that will allow for special actions like discount etc.",
+            "type": "string",
+            "example": "CARGOBOARD-WELCOME-123"
+          },
+          "wantsExportDeclaration": {
+            "description": "A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsClimateNeutralShipment": {
+            "description": "Negative environmental impact will be reduced for this service.",
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "wantsInsurance": {
+            "description": "Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance",
+            "type": "boolean",
+            "example": true,
+            "default": false
+          },
+          "valueOfGoodsAmount": {
+            "description": "Amount of money - value of goods for insurance or customs",
+            "type": "number",
+            "example": 30
+          },
+          "valueOfGoodsCurrency": {
+            "description": "Currency of value of goods. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "incoterm": {
+            "description": "Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP",
+            "type": "string",
+            "example": "STANDARD",
+            "enum": [
+              "STANDARD",
+              "DAP_CLEARED",
+              "DAP_UNCLEARED"
+            ]
+          },
+          "isSupplyingCompanyOrReceivingCustomer": {
+            "description": "Has to be set if shipment is going to Switzerland or other non-EU countries for tax reasons. If true customer is supplying company or receiving customer.",
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "product",
+          "shipper",
+          "consignee",
+          "lines"
+        ]
+      },
+      "OrderProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The id of product.",
+            "type": "string"
+          },
+          "product": {
+            "description": "The product. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "truckType": {
+            "description": "Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40",
+            "type": "string",
+            "example": "DIRECT_BUS_PLANE",
+            "enum": [
+              "DIRECT_BUS_PLANE",
+              "DIRECT_BUS_PLANE_XXL",
+              "DIRECT_TRUCK_7_5",
+              "DIRECT_TRUCK_12",
+              "DIRECT_TRUCK_40"
+            ]
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "priceStandard": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "pickupOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupAtFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupAtUntil": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "runtime": {
+            "$ref": "#/components/schemas/Runtime"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Delivery"
+          },
+          "costItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostItemProduct"
+            }
+          },
+          "co2Emission": {
+            "description": "CO2Emission details.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CO2Emission"
+              }
+            ]
+          },
+          "reference": {
+            "description": "Reference of order.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "product",
+          "price",
+          "priceStandard",
+          "pickupOn",
+          "pickupAtFrom",
+          "pickupAtUntil",
+          "runtime",
+          "delivery",
+          "costItems",
+          "co2Emission",
+          "reference"
+        ]
+      },
+      "ResponseCreateOrder": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OrderProduct"
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "Barcode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Id of barcode.",
+            "type": "string"
+          },
+          "sequence": {
+            "description": "Sequence of barcode.",
+            "type": "number"
+          },
+          "value": {
+            "description": "Value of barcode.",
+            "type": "string"
+          }
+        }
+      },
+      "LineOrder": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "description": "Content for the line.",
+            "example": "Tyres",
+            "type": "string"
+          },
+          "unitQuantity": {
+            "description": "Quantity for the line.",
+            "type": "integer",
+            "example": 3
+          },
+          "unitPackageType": {
+            "description": "PackageType for the line.",
+            "type": "string",
+            "enum": [
+              "KT",
+              "PA",
+              "BU",
+              "KN",
+              "RE",
+              "RA",
+              "BE",
+              "EI",
+              "KA",
+              "HO",
+              "GE",
+              "FL",
+              "FK",
+              "EK",
+              "KF",
+              "KO",
+              "DO",
+              "TRY",
+              "KI",
+              "PK",
+              "RO",
+              "SA",
+              "BL",
+              "KS",
+              "DR",
+              "MTV",
+              "VP",
+              "HP",
+              "FA",
+              "CC",
+              "CP",
+              "EB",
+              "CX",
+              "DP",
+              "HS",
+              "RG",
+              "RW",
+              "RC",
+              "EP",
+              "FP",
+              "KP",
+              "GP",
+              "EE",
+              "KB",
+              "IB",
+              "HE",
+              "KGP",
+              "KFP",
+              "IP",
+              "TC",
+              "KG",
+              "SB",
+              "GS",
+              "TR",
+              "CL",
+              "ST",
+              "UV",
+              "CO",
+              "VG",
+              "AB",
+              "PARTIE",
+              "KU",
+              "PAR",
+              "DIRECT_PKW",
+              "DIRECT_BUS",
+              "DIRECT_BUS_PLANE",
+              "DIRECT_BUS_PLANE_TL",
+              "DIRECT_BUS_PLANE_XXL",
+              "DIRECT_BUS_PLANE_XXL_TL",
+              "DIRECT_TRUCK_7_5",
+              "DIRECT_TRUCK_12",
+              "DIRECT_TRUCK_40",
+              "DIRECT_BUS_TL",
+              "DIRECT_TRUCK_7_5_TL",
+              "DIRECT_TRUCK_12_TL"
+            ]
+          },
+          "unitLength": {
+            "description": "Length for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitWidth": {
+            "description": "Width for the line.",
+            "type": "integer",
+            "example": 80
+          },
+          "unitHeight": {
+            "description": "Height for the line.",
+            "type": "integer",
+            "example": 120
+          },
+          "unitWeight": {
+            "description": "Weight for the line.",
+            "type": "number",
+            "example": 12.4
+          },
+          "isStackable": {
+            "description": "If set to true, packages are loadable and stackable.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsPalletExchange": {
+            "description": "If set to true, pallets exchange is required for a line.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "volume": {
+            "description": "Volume for the line.",
+            "type": "number"
+          },
+          "palletBays": {
+            "description": "Pallet bays for the line.",
+            "type": "number"
+          },
+          "loadingMeter": {
+            "description": "Loading meter for the line.",
+            "type": "number"
+          },
+          "additionalEuroPallets": {
+            "description": "Additional euro Pallets for the line (e.g. as top or side protection).",
+            "type": "number",
+            "example": 3
+          },
+          "dangerousGoods": {
+            "description": "Dangerous Goods for an order line.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGoodOrder"
+            }
+          },
+          "barcodes": {
+            "description": "Barcodes - one per every unit in line.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Barcode"
+            }
+          }
+        },
+        "required": [
+          "content",
+          "unitQuantity",
+          "unitPackageType",
+          "unitLength",
+          "unitWidth",
+          "unitHeight",
+          "unitWeight"
+        ]
+      },
+      "OrderId": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Id of order related to Easybill Invoice.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CustomerId": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Id of customer related to Easybill Invoice.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "EasybillInvoice": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "description": "Sequence of EasybillInvoice.",
+            "type": "number"
+          },
+          "documentId": {
+            "description": "Id of document (invoice) on Easybill API.",
+            "type": "number"
+          },
+          "isDocumentCompleted": {
+            "description": "If true document has been completed on Easybill API.",
+            "type": "boolean",
+            "default": false
+          },
+          "documentCompletedAt": {
+            "description": "Date of document completed on Easybill API.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDocumentCopiedToArchive": {
+            "description": "If true document has been copied from Easybill API to GCP storage archive.",
+            "type": "boolean",
+            "default": false
+          },
+          "isDocumentCopiedToArchiveZipped": {
+            "description": "If true document copied from Easybill API to GCP storage archive is zipped.",
+            "type": "boolean",
+            "default": false
+          },
+          "documentCopiedToArchiveAt": {
+            "description": "Date of document copy from Easybill API to GCP storage archive.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDocumentSent": {
+            "description": "If true document has been sent on Easybill API.",
+            "type": "boolean",
+            "default": false
+          },
+          "documentSentAt": {
+            "description": "Date of document sent on Easybill API.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDocumentCancelled": {
+            "description": "If true document has been cancelled on Easybill API.",
+            "type": "boolean",
+            "readOnly": true
+          },
+          "documentCancelledAt": {
+            "description": "Date of document cancellation on Easybill API.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "documentNumber": {
+            "description": "Number for document (invoice) on Easybill API.",
+            "type": "string"
+          },
+          "cancellationDocumentId": {
+            "description": "Id for cancellation document (invoice) on Easybill API.",
+            "type": "number"
+          },
+          "isCancellationDocumentSent": {
+            "description": "If true cancellation document has been cancelled on Easybill API.",
+            "type": "boolean",
+            "default": false,
+            "readOnly": true
+          },
+          "cancellationDocumentSentAt": {
+            "description": "Date of cancellation document sent on Easybill API.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "documentAmount": {
+            "type": "number",
+            "example": 2
+          },
+          "isDone": {
+            "description": "If true invoicing for related orders is finished on Easybill API.",
+            "type": "boolean",
+            "default": false
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderId"
+            }
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerId"
+          },
+          "dueDate": {
+            "description": "Date (time part value will be omitted) to when invoice should be paid.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-29"
+          },
+          "dueInDays": {
+            "description": "Period of time in days to when invoice should be paid.",
+            "type": "number",
+            "example": 12
+          },
+          "isPaid": {
+            "description": "If true invoice is paid.",
+            "type": "boolean",
+            "default": false
+          },
+          "paidAt": {
+            "description": "Date of payment.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "paymentAmount": {
+            "description": "Amount for payment.",
+            "type": "number",
+            "example": 13.21
+          },
+          "paymentCurrency": {
+            "description": "Currency for payment. Possible values: EUR.",
+            "type": "string",
+            "example": "EUR",
+            "enum": [
+              "EUR"
+            ]
+          }
+        },
+        "required": [
+          "isDocumentCancelled",
+          "documentNumber",
+          "cancellationDocumentId",
+          "documentAmount",
+          "orders",
+          "customer",
+          "paymentAmount"
+        ]
+      },
+      "CostItemOrder": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Cost item type. Possible values: DANGEROUS_GOODS, PRIVATE_CUSTOMER, IMPORT_DUTIES, CONTACT_BEFORE_PICKUP, TAIL_LIFT_TRUCK, PREMIUM_DELIVERY, CONTACT_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, DELIVERY_WITHOUT_CONSIGNEE_PRESENCE, TRANSPORT_INSURANCE, EXPORT_DECLARATION, ADDITIONAL_PRODUCTS, PALLET_EXCHANGE, CLIMATE_NEUTRAL_SURCHARGE, SHIPMENT, GENERAL_MARGIN, CUSTOMIZED_MARGIN, ACTUAL_COST_CORRECTION, FUEL_SURCHARGE, CUSTOMER_DISCOUNT, COUPON.",
+            "type": "string",
+            "example": "SHIPMENT",
+            "enum": [
+              "DANGEROUS_GOODS",
+              "PRIVATE_CUSTOMER",
+              "IMPORT_DUTIES",
+              "CONTACT_BEFORE_PICKUP",
+              "TAIL_LIFT_TRUCK",
+              "PREMIUM_DELIVERY",
+              "CONTACT_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "DELIVERY_WITHOUT_CONSIGNEE_PRESENCE",
+              "TRANSPORT_INSURANCE",
+              "EXPORT_DECLARATION",
+              "ADDITIONAL_PRODUCTS",
+              "PALLET_EXCHANGE",
+              "CLIMATE_NEUTRAL_SURCHARGE",
+              "SHIPMENT",
+              "GENERAL_MARGIN",
+              "CUSTOMIZED_MARGIN",
+              "ACTUAL_COST_CORRECTION",
+              "FUEL_SURCHARGE",
+              "CUSTOMER_DISCOUNT",
+              "COUPON"
+            ]
+          },
+          "subtype": {
+            "description": "Cost item subtype. Possible values: PICKUP_ADVISE, DELIVERY_ADVISE, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, TAIL_LIFT, TAIL_LIFT_PICKUP, TAIL_LIFT_DELIVERY, DELIVERY_WHITOUT_CONSIGNEE_PRESENCE, PREMIUM_DELIVERY, PRIVATE_CONSIGNEE, EXPRESS_16, EXPRESS_12, EXPRESS_10, EXPRESS_8, FIX_16, FIX_12, FIX_10, FIX_8, PICKUP_BEFORE_12, PICKUP_AFTER_12, DELIVERY_BEFORE_12, DELIVERY_AFTER_12, EXPORT_DECLARATION, IMPORT_DECLARATION.",
+            "type": "string",
+            "example": "PICKUP_ADVISE",
+            "enum": [
+              "PICKUP_ADVISE",
+              "DELIVERY_ADVISE",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "TAIL_LIFT",
+              "TAIL_LIFT_PICKUP",
+              "TAIL_LIFT_DELIVERY",
+              "DELIVERY_WHITOUT_CONSIGNEE_PRESENCE",
+              "PREMIUM_DELIVERY",
+              "PRIVATE_CONSIGNEE",
+              "EXPRESS_16",
+              "EXPRESS_12",
+              "EXPRESS_10",
+              "EXPRESS_8",
+              "FIX_16",
+              "FIX_12",
+              "FIX_10",
+              "FIX_8",
+              "PICKUP_BEFORE_12",
+              "PICKUP_AFTER_12",
+              "DELIVERY_BEFORE_12",
+              "DELIVERY_AFTER_12",
+              "EXPORT_DECLARATION",
+              "IMPORT_DECLARATION"
+            ]
+          },
+          "description": {
+            "description": "Description for cost item.",
+            "type": "string",
+            "example": "Cost item."
+          },
+          "sellPrice": {
+            "type": "number",
+            "example": 2
+          },
+          "currency": {
+            "description": "Currency for price. Possible values: EUR.",
+            "type": "string",
+            "example": "EUR",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "isOnCustomerInvoice": {
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "easybillInvoiceId": {
+            "type": "string",
+            "example": "cl267eg9r000009mqgixia7hh"
+          },
+          "vat": {
+            "type": "number",
+            "example": 2
+          },
+          "cost": {
+            "type": "number",
+            "example": 2
+          },
+          "easybillDocumentPositionId": {
+            "description": "Easybill document position id is id field from DocumentPosition Resource. Facilitates matching CostItem on Cargoboard API with DocumentPosition on Easybill API.",
+            "type": "number",
+            "readOnly": true
+          },
+          "sequence": {
+            "description": "Sequence of cost item.",
+            "type": "number",
+            "readOnly": true
+          },
+          "createdAt": {
+            "description": "Creation date and time.",
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "description": "Last edition date and time.",
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "createdById": {
+            "description": "Id of creator user.",
+            "type": "string",
+            "readOnly": true
+          },
+          "updatedById": {
+            "description": "Id of editor user.",
+            "type": "string",
+            "readOnly": true
+          },
+          "isInvoiceable": {
+            "description": "Cost item is invoiceable when is set for being part of invoice but is not on one already and its sell price is different than zero.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ],
+            "readOnly": true
+          }
+        },
+        "required": [
+          "type",
+          "subtype",
+          "description",
+          "sellPrice",
+          "currency",
+          "isOnCustomerInvoice",
+          "easybillInvoiceId",
+          "vat",
+          "cost",
+          "isInvoiceable"
+        ]
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "description": "The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "transportType": {
+            "description": "Transport type of order. Possible values GROUPAGE, PART_LOAD, DIRECT",
+            "type": "string",
+            "example": "PART_LOAD"
+          },
+          "customerOrderCode": {
+            "description": "A code applied by customer that will appear on documents as CustomerOrderNo",
+            "type": "string",
+            "example": "XYZ-1568788"
+          },
+          "couponCode": {
+            "description": "A code applied by customer that will allow for special actions like discount etc.",
+            "type": "string",
+            "example": "CARGOBOARD-WELCOME-123"
+          },
+          "wantsExportDeclaration": {
+            "description": "A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsClimateNeutralShipment": {
+            "description": "Negative environmental impact will be reduced for this service.",
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "wantsInsurance": {
+            "description": "Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance",
+            "type": "boolean",
+            "example": true,
+            "default": false
+          },
+          "incoterm": {
+            "description": "Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP",
+            "type": "string",
+            "example": "STANDARD",
+            "enum": [
+              "STANDARD",
+              "DAP_CLEARED",
+              "DAP_UNCLEARED"
+            ]
+          },
+          "isSupplyingCompanyOrReceivingCustomer": {
+            "description": "If true customer is supplying company or receiving customer",
+            "type": "boolean",
+            "example": false
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/ShipperOrder"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/ConsigneeOrder"
+          },
+          "valueOfGoodsAmount": {
+            "description": "Amount of money - value of goods for insurance or customs",
+            "type": "number",
+            "example": 30
+          },
+          "valueOfGoodsCurrency": {
+            "description": "Currency of value of goods. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "lines": {
+            "description": "Line for a product.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineOrder"
+            }
+          },
+          "id": {
+            "description": "Id of order.",
+            "type": "string"
+          },
+          "sequence": {
+            "description": "Sequence of order.",
+            "type": "number"
+          },
+          "status": {
+            "description": "Status of order. Possible values INITIALIZED, CREATED, WAITING_FOR_PAYMENT, CANCELLED",
+            "type": "string",
+            "example": "INITIALIZED"
+          },
+          "customerId": {
+            "description": "Id of customer.",
+            "type": "string"
+          },
+          "quotationId": {
+            "description": "Id of quotation.",
+            "type": "string"
+          },
+          "reference": {
+            "description": "Reference of order.",
+            "type": "string"
+          },
+          "orderKeyEikona": {
+            "description": "Order key eikona",
+            "type": "string",
+            "example": "xyz0000000"
+          },
+          "orderIdEikona": {
+            "description": "Order id eikona",
+            "type": "string",
+            "example": "123"
+          },
+          "paymentProcessId": {
+            "description": "Payment process id.",
+            "type": "string"
+          },
+          "paymentMethod": {
+            "description": "Payment methods of order. Possible values INVOICE, SEPA, PAY_PAL, GIROPAY, CREDIT_CARD, DIRECT_DEBIT, PREPAYMENT, NO_PAYMENT",
+            "type": "string",
+            "example": "INVOICE"
+          },
+          "refundType": {
+            "description": "RefundType of order. Possible values FULL, PARTIAL, NO",
+            "type": "string",
+            "example": "FULL"
+          },
+          "isEasybillInvoicingActive": {
+            "description": "Is Easybill invoicing active.",
+            "type": "boolean"
+          },
+          "isConfirmationNeeded": {
+            "description": "Is confirmation needed.",
+            "type": "boolean"
+          },
+          "isConfirmed": {
+            "description": "Is confirmed.",
+            "type": "boolean"
+          },
+          "confirmedAt": {
+            "description": "Date of confirmation of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "isAcceptanceNeeded": {
+            "description": "Is acceptance needed.",
+            "type": "boolean"
+          },
+          "isAccepted": {
+            "description": "Is accepted.",
+            "type": "boolean"
+          },
+          "acceptedAt": {
+            "description": "Date of acceptance of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "easybillInvoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EasybillInvoice"
+            }
+          },
+          "runtimeDaysMin": {
+            "description": "Runtime days minimum.",
+            "type": "number",
+            "example": 3
+          },
+          "runtimeDaysMax": {
+            "description": "Runtime days maximum.",
+            "type": "number",
+            "example": 6
+          },
+          "priceAmount": {
+            "description": "Price amount.",
+            "type": "number",
+            "example": 10
+          },
+          "priceCurrency": {
+            "description": "Price currency. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "priceAmountStandard": {
+            "description": "Price amount standard.",
+            "type": "number",
+            "example": 12
+          },
+          "priceCurrencyStandard": {
+            "description": "Price currency standard. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "placedAt": {
+            "description": "Date of order placement",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "createdAt": {
+            "description": "Date of creation of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "updatedAt": {
+            "description": "Date of update of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "truckType": {
+            "description": "Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40",
+            "type": "string",
+            "example": "DIRECT_BUS_PLANE"
+          },
+          "domain": {
+            "description": "Domain",
+            "type": "string",
+            "example": "api.cargoboard.com"
+          },
+          "shippingPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "deliveringPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "shipmentStatus": {
+            "description": "Shipment status of order. Possible values CREATED, IN_DISPOSITION, COLLECTED, TRANSIT, DELIVERED, ACTION_REQUIRED, CANCELLED, IN_DELIVERY, SCHEDULED, WAITING_FOR_CUSTOMER, CUSTOMS_CLEARANCE, MISSING_INFORMATION, ALL_DOCUMENTS_PRESENT",
+            "type": "string",
+            "example": "CREATED"
+          },
+          "tariffCategory": {
+            "description": "Tariff category of order. Possible values A, B, C",
+            "type": "string",
+            "example": "C"
+          },
+          "linesWeight": {
+            "description": "Lines weight of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesVolume": {
+            "description": "Lines volume of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesPalletBays": {
+            "description": "Lines pallet bays of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesLoadingMeter": {
+            "description": "Lines loading meter of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "co2EmissionAmount": {
+            "description": "CO2 Emission amount of quotation.",
+            "type": "number"
+          },
+          "co2EmissionValue": {
+            "description": "CO2 Emission value of quotation.",
+            "type": "number"
+          },
+          "co2EmissionUnit": {
+            "description": "CO2 Emission unit of quotation.",
+            "type": "string"
+          },
+          "shippingPartnerOrderNumber": {
+            "description": "Shipping partner order number",
+            "type": "string"
+          },
+          "deliveringPartnerOrderNumber": {
+            "description": "Delivering partner order number",
+            "type": "string"
+          },
+          "shipmentCost": {
+            "description": "Shipment cost of order.",
+            "type": "number",
+            "example": 10
+          },
+          "actualCost": {
+            "description": "Actual cost of order.",
+            "type": "number",
+            "example": 10
+          },
+          "actualPrice": {
+            "description": "Actual price of order.",
+            "type": "number",
+            "example": 10
+          },
+          "actualPriceStandard": {
+            "description": "Actual standard price of order.",
+            "type": "number",
+            "example": 10
+          },
+          "grossActualPrice": {
+            "description": "Gross actual price of order.",
+            "type": "number"
+          },
+          "isCountryWithCustoms": {
+            "description": "True if  shipper or consignee is in one of the countries with customs.",
+            "type": "boolean",
+            "example": false
+          },
+          "isShipperCountryWithCustoms": {
+            "description": "True if  shipper is in one of the countries with customs.",
+            "type": "boolean",
+            "example": false
+          },
+          "isCharterShipment": {
+            "description": "True for Charter shipment (transport type direct or part-load).",
+            "type": "boolean",
+            "example": false
+          },
+          "costItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostItemOrder"
+            }
+          },
+          "quantityOfEuroPallets": {
+            "description": "Quantity of euro pallets from lines.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ]
+          },
+          "linesUnitsQuantity": {
+            "description": "Quantity of units from lines - all possible package types.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ]
+          },
+          "linesPackagesQuantity": {
+            "description": "Quantity of units from lines - package type KT (Cardboard).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ]
+          },
+          "isInvoiceable": {
+            "description": "An order is considered invoiceable under the following conditions: a) If no invoice exists for the order. b) If there are existing invoices for the order, the actual price of the remaining uninvoiced cost items should be different from 0.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ],
+            "readOnly": true
+          }
+        },
+        "required": [
+          "product",
+          "shipper",
+          "consignee",
+          "lines",
+          "isCountryWithCustoms",
+          "isShipperCountryWithCustoms",
+          "isCharterShipment",
+          "quantityOfEuroPallets",
+          "linesUnitsQuantity",
+          "linesPackagesQuantity",
+          "isInvoiceable"
+        ]
+      },
+      "ResponseGetOrder": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Order"
+              }
+            ]
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "UpdateOrder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "id (CUID)",
+            "type": "string",
+            "example": "cldujgbg6000008mdfft156xc"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CostItemOrderForCustomer": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Cost item type. Possible values: DANGEROUS_GOODS, PRIVATE_CUSTOMER, IMPORT_DUTIES, CONTACT_BEFORE_PICKUP, TAIL_LIFT_TRUCK, PREMIUM_DELIVERY, CONTACT_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, DELIVERY_WITHOUT_CONSIGNEE_PRESENCE, TRANSPORT_INSURANCE, EXPORT_DECLARATION, ADDITIONAL_PRODUCTS, PALLET_EXCHANGE, CLIMATE_NEUTRAL_SURCHARGE, SHIPMENT, GENERAL_MARGIN, CUSTOMIZED_MARGIN, ACTUAL_COST_CORRECTION, FUEL_SURCHARGE, CUSTOMER_DISCOUNT, COUPON.",
+            "type": "string",
+            "example": "SHIPMENT",
+            "enum": [
+              "DANGEROUS_GOODS",
+              "PRIVATE_CUSTOMER",
+              "IMPORT_DUTIES",
+              "CONTACT_BEFORE_PICKUP",
+              "TAIL_LIFT_TRUCK",
+              "PREMIUM_DELIVERY",
+              "CONTACT_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "DELIVERY_WITHOUT_CONSIGNEE_PRESENCE",
+              "TRANSPORT_INSURANCE",
+              "EXPORT_DECLARATION",
+              "ADDITIONAL_PRODUCTS",
+              "PALLET_EXCHANGE",
+              "CLIMATE_NEUTRAL_SURCHARGE",
+              "SHIPMENT",
+              "GENERAL_MARGIN",
+              "CUSTOMIZED_MARGIN",
+              "ACTUAL_COST_CORRECTION",
+              "FUEL_SURCHARGE",
+              "CUSTOMER_DISCOUNT",
+              "COUPON"
+            ]
+          },
+          "subtype": {
+            "description": "Cost item subtype. Possible values: PICKUP_ADVISE, DELIVERY_ADVISE, PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP, PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY, TAIL_LIFT, TAIL_LIFT_PICKUP, TAIL_LIFT_DELIVERY, DELIVERY_WHITOUT_CONSIGNEE_PRESENCE, PREMIUM_DELIVERY, PRIVATE_CONSIGNEE, EXPRESS_16, EXPRESS_12, EXPRESS_10, EXPRESS_8, FIX_16, FIX_12, FIX_10, FIX_8, PICKUP_BEFORE_12, PICKUP_AFTER_12, DELIVERY_BEFORE_12, DELIVERY_AFTER_12, EXPORT_DECLARATION, IMPORT_DECLARATION.",
+            "type": "string",
+            "example": "PICKUP_ADVISE",
+            "enum": [
+              "PICKUP_ADVISE",
+              "DELIVERY_ADVISE",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
+              "PHONE_CALL_FROM_DRIVER_BEFORE_DELIVERY",
+              "TAIL_LIFT",
+              "TAIL_LIFT_PICKUP",
+              "TAIL_LIFT_DELIVERY",
+              "DELIVERY_WHITOUT_CONSIGNEE_PRESENCE",
+              "PREMIUM_DELIVERY",
+              "PRIVATE_CONSIGNEE",
+              "EXPRESS_16",
+              "EXPRESS_12",
+              "EXPRESS_10",
+              "EXPRESS_8",
+              "FIX_16",
+              "FIX_12",
+              "FIX_10",
+              "FIX_8",
+              "PICKUP_BEFORE_12",
+              "PICKUP_AFTER_12",
+              "DELIVERY_BEFORE_12",
+              "DELIVERY_AFTER_12",
+              "EXPORT_DECLARATION",
+              "IMPORT_DECLARATION"
+            ]
+          },
+          "description": {
+            "description": "Description for cost item.",
+            "type": "string",
+            "example": "Cost item."
+          },
+          "sellPrice": {
+            "type": "number",
+            "example": 2
+          },
+          "currency": {
+            "description": "Currency for price. Possible values: EUR.",
+            "type": "string",
+            "example": "EUR",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "isOnCustomerInvoice": {
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "easybillInvoiceId": {
+            "type": "string",
+            "example": "cl267eg9r000009mqgixia7hh"
+          },
+          "vat": {
+            "type": "number",
+            "example": 2
+          },
+          "sequence": {
+            "description": "Sequence of price level.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "subtype",
+          "description",
+          "sellPrice",
+          "currency",
+          "isOnCustomerInvoice",
+          "easybillInvoiceId",
+          "vat"
+        ]
+      },
+      "OrderForCustomer": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "description": "The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD.",
+            "type": "string",
+            "example": "FIX",
+            "enum": [
+              "DIRECT",
+              "EXPRESS",
+              "EXPRESS_8",
+              "EXPRESS_10",
+              "EXPRESS_12",
+              "EXPRESS_16",
+              "FIX",
+              "FIX_8",
+              "FIX_10",
+              "FIX_12",
+              "FIX_16",
+              "STANDARD"
+            ]
+          },
+          "transportType": {
+            "description": "Transport type of order. Possible values GROUPAGE, PART_LOAD, DIRECT",
+            "type": "string",
+            "example": "PART_LOAD"
+          },
+          "customerOrderCode": {
+            "description": "A code applied by customer that will appear on documents as CustomerOrderNo",
+            "type": "string",
+            "example": "XYZ-1568788"
+          },
+          "couponCode": {
+            "description": "A code applied by customer that will allow for special actions like discount etc.",
+            "type": "string",
+            "example": "CARGOBOARD-WELCOME-123"
+          },
+          "wantsExportDeclaration": {
+            "description": "A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland.",
+            "type": "boolean",
+            "example": false,
+            "default": false
+          },
+          "wantsClimateNeutralShipment": {
+            "description": "Negative environmental impact will be reduced for this service.",
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "wantsInsurance": {
+            "description": "Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance",
+            "type": "boolean",
+            "example": true,
+            "default": false
+          },
+          "incoterm": {
+            "description": "Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP",
+            "type": "string",
+            "example": "STANDARD",
+            "enum": [
+              "STANDARD",
+              "DAP_CLEARED",
+              "DAP_UNCLEARED"
+            ]
+          },
+          "isSupplyingCompanyOrReceivingCustomer": {
+            "description": "If true customer is supplying company or receiving customer",
+            "type": "boolean",
+            "example": false
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/ShipperOrder"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/ConsigneeOrder"
+          },
+          "valueOfGoodsAmount": {
+            "description": "Amount of money - value of goods for insurance or customs",
+            "type": "number",
+            "example": 30
+          },
+          "valueOfGoodsCurrency": {
+            "description": "Currency of value of goods. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "lines": {
+            "description": "Line for a product.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineOrder"
+            }
+          },
+          "id": {
+            "description": "Id of order.",
+            "type": "string"
+          },
+          "sequence": {
+            "description": "Sequence of order.",
+            "type": "number"
+          },
+          "status": {
+            "description": "Status of order. Possible values INITIALIZED, CREATED, WAITING_FOR_PAYMENT, CANCELLED",
+            "type": "string",
+            "example": "INITIALIZED"
+          },
+          "customerId": {
+            "description": "Id of customer.",
+            "type": "string"
+          },
+          "quotationId": {
+            "description": "Id of quotation.",
+            "type": "string"
+          },
+          "reference": {
+            "description": "Reference of order.",
+            "type": "string"
+          },
+          "orderKeyEikona": {
+            "description": "Order key eikona",
+            "type": "string",
+            "example": "xyz0000000"
+          },
+          "orderIdEikona": {
+            "description": "Order id eikona",
+            "type": "string",
+            "example": "123"
+          },
+          "paymentProcessId": {
+            "description": "Payment process id.",
+            "type": "string"
+          },
+          "paymentMethod": {
+            "description": "Payment methods of order. Possible values INVOICE, SEPA, PAY_PAL, GIROPAY, CREDIT_CARD, DIRECT_DEBIT, PREPAYMENT, NO_PAYMENT",
+            "type": "string",
+            "example": "INVOICE"
+          },
+          "refundType": {
+            "description": "RefundType of order. Possible values FULL, PARTIAL, NO",
+            "type": "string",
+            "example": "FULL"
+          },
+          "isEasybillInvoicingActive": {
+            "description": "Is Easybill invoicing active.",
+            "type": "boolean"
+          },
+          "isConfirmationNeeded": {
+            "description": "Is confirmation needed.",
+            "type": "boolean"
+          },
+          "isConfirmed": {
+            "description": "Is confirmed.",
+            "type": "boolean"
+          },
+          "confirmedAt": {
+            "description": "Date of confirmation of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "isAcceptanceNeeded": {
+            "description": "Is acceptance needed.",
+            "type": "boolean"
+          },
+          "isAccepted": {
+            "description": "Is accepted.",
+            "type": "boolean"
+          },
+          "acceptedAt": {
+            "description": "Date of acceptance of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "easybillInvoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EasybillInvoice"
+            }
+          },
+          "runtimeDaysMin": {
+            "description": "Runtime days minimum.",
+            "type": "number",
+            "example": 3
+          },
+          "runtimeDaysMax": {
+            "description": "Runtime days maximum.",
+            "type": "number",
+            "example": 6
+          },
+          "priceAmount": {
+            "description": "Price amount.",
+            "type": "number",
+            "example": 10
+          },
+          "priceCurrency": {
+            "description": "Price currency. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "priceAmountStandard": {
+            "description": "Price amount standard.",
+            "type": "number",
+            "example": 12
+          },
+          "priceCurrencyStandard": {
+            "description": "Price currency standard. Possible values EUR",
+            "type": "string",
+            "example": "EUR"
+          },
+          "placedAt": {
+            "description": "Date of order placement",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "createdAt": {
+            "description": "Date of creation of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "updatedAt": {
+            "description": "Date of update of order",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-17T10:10:39.535Z"
+          },
+          "truckType": {
+            "description": "Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40",
+            "type": "string",
+            "example": "DIRECT_BUS_PLANE"
+          },
+          "domain": {
+            "description": "Domain",
+            "type": "string",
+            "example": "api.cargoboard.com"
+          },
+          "shippingPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "deliveringPartner": {
+            "description": "Shipping partner",
+            "type": "string"
+          },
+          "shipmentStatus": {
+            "description": "Shipment status of order. Possible values CREATED, IN_DISPOSITION, COLLECTED, TRANSIT, DELIVERED, ACTION_REQUIRED, CANCELLED, IN_DELIVERY, SCHEDULED, WAITING_FOR_CUSTOMER, CUSTOMS_CLEARANCE, MISSING_INFORMATION, ALL_DOCUMENTS_PRESENT",
+            "type": "string",
+            "example": "CREATED"
+          },
+          "tariffCategory": {
+            "description": "Tariff category of order. Possible values A, B, C",
+            "type": "string",
+            "example": "C"
+          },
+          "linesWeight": {
+            "description": "Lines weight of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesVolume": {
+            "description": "Lines volume of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesPalletBays": {
+            "description": "Lines pallet bays of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "linesLoadingMeter": {
+            "description": "Lines loading meter of quotation.",
+            "type": "number",
+            "example": 10
+          },
+          "co2EmissionAmount": {
+            "description": "CO2 Emission amount of quotation.",
+            "type": "number"
+          },
+          "co2EmissionValue": {
+            "description": "CO2 Emission value of quotation.",
+            "type": "number"
+          },
+          "co2EmissionUnit": {
+            "description": "CO2 Emission unit of quotation.",
+            "type": "string"
+          },
+          "actualPrice": {
+            "description": "Actual price of order.",
+            "type": "number",
+            "example": 10
+          },
+          "actualPriceStandard": {
+            "description": "Actual standard price of order.",
+            "type": "number",
+            "example": 10
+          },
+          "grossActualPrice": {
+            "description": "Gross actual price of order.",
+            "type": "number"
+          },
+          "costItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostItemOrderForCustomer"
+            }
+          }
+        },
+        "required": [
+          "product",
+          "shipper",
+          "consignee",
+          "lines"
+        ]
+      },
+      "ResponseGetOrdersForCustomer": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Orders.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderForCustomer"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          },
+          "total": {
+            "description": "Total number of orders.",
+            "type": "number"
+          }
+        }
+      },
+      "CancelOrder": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Cancelation Status."
+          },
+          "message": {
+            "type": "string",
+            "example": "Message."
+          }
+        }
+      },
+      "ResponseCancelOrder": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CancelOrder"
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "TrackingStep": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "description": "Sequence of the tracking step.",
+            "type": "number"
+          },
+          "type": {
+            "description": "Type of tracking step.",
+            "type": "string",
+            "enum": [
+              "ACCEPTED",
+              "DISPOSITION",
+              "PICKED_UP",
+              "DISPATCHED",
+              "UNLOADED",
+              "ON_A_WAY_TO_CONSIGNEE",
+              "DELIVERED"
+            ]
+          },
+          "code": {
+            "description": "Status code of the step.",
+            "type": "string",
+            "enum": [
+              "5X0",
+              "-1",
+              "00",
+              "01",
+              "02",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "08",
+              "10",
+              "14",
+              "16",
+              "17",
+              "20",
+              "21",
+              "22",
+              "28",
+              "29",
+              "30",
+              "33",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "49",
+              "50",
+              "51",
+              "52",
+              "54",
+              "57",
+              "60",
+              "61",
+              "62",
+              "63",
+              "65",
+              "67",
+              "68",
+              "70",
+              "80",
+              "81",
+              "91",
+              "92",
+              "93",
+              "95",
+              "98",
+              "99",
+              "100",
+              "300",
+              "301",
+              "302",
+              "303",
+              "304",
+              "305",
+              "400",
+              "401",
+              "410",
+              "411",
+              "420",
+              "421",
+              "422",
+              "423",
+              "424",
+              "430",
+              "431",
+              "432",
+              "433",
+              "434",
+              "442",
+              "453",
+              "470",
+              "471",
+              "472",
+              "473",
+              "474",
+              "500",
+              "510",
+              "521",
+              "522",
+              "523",
+              "526",
+              "527",
+              "528",
+              "529",
+              "533",
+              "540",
+              "549",
+              "550",
+              "552",
+              "570",
+              "571",
+              "618",
+              "619",
+              "620",
+              "621",
+              "622",
+              "623",
+              "624",
+              "625",
+              "626",
+              "627",
+              "628",
+              "632",
+              "633",
+              "634",
+              "636",
+              "637",
+              "638",
+              "640",
+              "641",
+              "644",
+              "645",
+              "646",
+              "647",
+              "648",
+              "649",
+              "650",
+              "651",
+              "652",
+              "654",
+              "655",
+              "656",
+              "657",
+              "658",
+              "659",
+              "660",
+              "661",
+              "663",
+              "664",
+              "665",
+              "666",
+              "667",
+              "668",
+              "669",
+              "670",
+              "672",
+              "674",
+              "679",
+              "681",
+              "682",
+              "683",
+              "684",
+              "685",
+              "686",
+              "687",
+              "688",
+              "689",
+              "690",
+              "691",
+              "692",
+              "693",
+              "694",
+              "695",
+              "696",
+              "697",
+              "698",
+              "699",
+              "701",
+              "702",
+              "703",
+              "704",
+              "705",
+              "706",
+              "707",
+              "708",
+              "709",
+              "710",
+              "711",
+              "712",
+              "713",
+              "714",
+              "715",
+              "716",
+              "717",
+              "718",
+              "719",
+              "720",
+              "721",
+              "722",
+              "723",
+              "724",
+              "725",
+              "726",
+              "727",
+              "728",
+              "729",
+              "730",
+              "731",
+              "732",
+              "733",
+              "734",
+              "735",
+              "736",
+              "737",
+              "738",
+              "739",
+              "740",
+              "741",
+              "742",
+              "743",
+              "744",
+              "745",
+              "746",
+              "747",
+              "748",
+              "749",
+              "750",
+              "751",
+              "752",
+              "753",
+              "754",
+              "755",
+              "756",
+              "761",
+              "762",
+              "763",
+              "764",
+              "765",
+              "766",
+              "767",
+              "768",
+              "769",
+              "770",
+              "771",
+              "772",
+              "773",
+              "774",
+              "775",
+              "776",
+              "777",
+              "778",
+              "779",
+              "780",
+              "781",
+              "783",
+              "785",
+              "787",
+              "789",
+              "790",
+              "791",
+              "792",
+              "793",
+              "794",
+              "795",
+              "796",
+              "797",
+              "798",
+              "799",
+              "800",
+              "801",
+              "802",
+              "803",
+              "804",
+              "805",
+              "806",
+              "807",
+              "808",
+              "809",
+              "810",
+              "811",
+              "812",
+              "813",
+              "814",
+              "815",
+              "816",
+              "817",
+              "818",
+              "819",
+              "820",
+              "821",
+              "822",
+              "823",
+              "824",
+              "825",
+              "826",
+              "827",
+              "828",
+              "829",
+              "830",
+              "831",
+              "832",
+              "833",
+              "834",
+              "835",
+              "836",
+              "837",
+              "838",
+              "839",
+              "840",
+              "841",
+              "842",
+              "843",
+              "844",
+              "845",
+              "846",
+              "847",
+              "848",
+              "849",
+              "850",
+              "851",
+              "852",
+              "853",
+              "854",
+              "855",
+              "856",
+              "857",
+              "858",
+              "859",
+              "860",
+              "861",
+              "862",
+              "863",
+              "864",
+              "865",
+              "866",
+              "867",
+              "868",
+              "869",
+              "870",
+              "871",
+              "872",
+              "873",
+              "874",
+              "875",
+              "876",
+              "877",
+              "878",
+              "879",
+              "880",
+              "881",
+              "882",
+              "883",
+              "884",
+              "885",
+              "886",
+              "887",
+              "888",
+              "889",
+              "890",
+              "891",
+              "892",
+              "893",
+              "894",
+              "895",
+              "896",
+              "897",
+              "898",
+              "899",
+              "900",
+              "901",
+              "902",
+              "903",
+              "904",
+              "905",
+              "906",
+              "907",
+              "908",
+              "909",
+              "910",
+              "911",
+              "912",
+              "913",
+              "914",
+              "915",
+              "916",
+              "917",
+              "918",
+              "919",
+              "920",
+              "921",
+              "922",
+              "923",
+              "924",
+              "925",
+              "926",
+              "927",
+              "928",
+              "929",
+              "930",
+              "931",
+              "932",
+              "933",
+              "934",
+              "935",
+              "936",
+              "937",
+              "938",
+              "939",
+              "940",
+              "941",
+              "942",
+              "943",
+              "944",
+              "945",
+              "946",
+              "947",
+              "948",
+              "949",
+              "950",
+              "951",
+              "952",
+              "953",
+              "954",
+              "955",
+              "956",
+              "957",
+              "958",
+              "959",
+              "960",
+              "961",
+              "962",
+              "963",
+              "964",
+              "965",
+              "966",
+              "967",
+              "968",
+              "969",
+              "970",
+              "971",
+              "972",
+              "973",
+              "974",
+              "975",
+              "976",
+              "977",
+              "978",
+              "979",
+              "980",
+              "981",
+              "982",
+              "983",
+              "984",
+              "985",
+              "986",
+              "987",
+              "988",
+              "989",
+              "990",
+              "991",
+              "992",
+              "993",
+              "994",
+              "995",
+              "996",
+              "997",
+              "998",
+              "999"
+            ]
+          },
+          "status": {
+            "description": "Status of the step.",
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "WARNING",
+              "PENDING",
+              "NO_STATUS"
+            ]
+          },
+          "originatedAt": {
+            "description": "Date and time when status event happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          }
+        },
+        "required": [
+          "type",
+          "code",
+          "status",
+          "originatedAt"
+        ]
+      },
+      "TrackingStatus": {
+        "type": "object",
+        "properties": {
+          "originatedAt": {
+            "description": "Date and time when status event happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "code": {
+            "description": "Status code of event.",
+            "type": "string",
+            "enum": [
+              "5X0",
+              "-1",
+              "00",
+              "01",
+              "02",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "08",
+              "10",
+              "14",
+              "16",
+              "17",
+              "20",
+              "21",
+              "22",
+              "28",
+              "29",
+              "30",
+              "33",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "49",
+              "50",
+              "51",
+              "52",
+              "54",
+              "57",
+              "60",
+              "61",
+              "62",
+              "63",
+              "65",
+              "67",
+              "68",
+              "70",
+              "80",
+              "81",
+              "91",
+              "92",
+              "93",
+              "95",
+              "98",
+              "99",
+              "100",
+              "300",
+              "301",
+              "302",
+              "303",
+              "304",
+              "305",
+              "400",
+              "401",
+              "410",
+              "411",
+              "420",
+              "421",
+              "422",
+              "423",
+              "424",
+              "430",
+              "431",
+              "432",
+              "433",
+              "434",
+              "442",
+              "453",
+              "470",
+              "471",
+              "472",
+              "473",
+              "474",
+              "500",
+              "510",
+              "521",
+              "522",
+              "523",
+              "526",
+              "527",
+              "528",
+              "529",
+              "533",
+              "540",
+              "549",
+              "550",
+              "552",
+              "570",
+              "571",
+              "618",
+              "619",
+              "620",
+              "621",
+              "622",
+              "623",
+              "624",
+              "625",
+              "626",
+              "627",
+              "628",
+              "632",
+              "633",
+              "634",
+              "636",
+              "637",
+              "638",
+              "640",
+              "641",
+              "644",
+              "645",
+              "646",
+              "647",
+              "648",
+              "649",
+              "650",
+              "651",
+              "652",
+              "654",
+              "655",
+              "656",
+              "657",
+              "658",
+              "659",
+              "660",
+              "661",
+              "663",
+              "664",
+              "665",
+              "666",
+              "667",
+              "668",
+              "669",
+              "670",
+              "672",
+              "674",
+              "679",
+              "681",
+              "682",
+              "683",
+              "684",
+              "685",
+              "686",
+              "687",
+              "688",
+              "689",
+              "690",
+              "691",
+              "692",
+              "693",
+              "694",
+              "695",
+              "696",
+              "697",
+              "698",
+              "699",
+              "701",
+              "702",
+              "703",
+              "704",
+              "705",
+              "706",
+              "707",
+              "708",
+              "709",
+              "710",
+              "711",
+              "712",
+              "713",
+              "714",
+              "715",
+              "716",
+              "717",
+              "718",
+              "719",
+              "720",
+              "721",
+              "722",
+              "723",
+              "724",
+              "725",
+              "726",
+              "727",
+              "728",
+              "729",
+              "730",
+              "731",
+              "732",
+              "733",
+              "734",
+              "735",
+              "736",
+              "737",
+              "738",
+              "739",
+              "740",
+              "741",
+              "742",
+              "743",
+              "744",
+              "745",
+              "746",
+              "747",
+              "748",
+              "749",
+              "750",
+              "751",
+              "752",
+              "753",
+              "754",
+              "755",
+              "756",
+              "761",
+              "762",
+              "763",
+              "764",
+              "765",
+              "766",
+              "767",
+              "768",
+              "769",
+              "770",
+              "771",
+              "772",
+              "773",
+              "774",
+              "775",
+              "776",
+              "777",
+              "778",
+              "779",
+              "780",
+              "781",
+              "783",
+              "785",
+              "787",
+              "789",
+              "790",
+              "791",
+              "792",
+              "793",
+              "794",
+              "795",
+              "796",
+              "797",
+              "798",
+              "799",
+              "800",
+              "801",
+              "802",
+              "803",
+              "804",
+              "805",
+              "806",
+              "807",
+              "808",
+              "809",
+              "810",
+              "811",
+              "812",
+              "813",
+              "814",
+              "815",
+              "816",
+              "817",
+              "818",
+              "819",
+              "820",
+              "821",
+              "822",
+              "823",
+              "824",
+              "825",
+              "826",
+              "827",
+              "828",
+              "829",
+              "830",
+              "831",
+              "832",
+              "833",
+              "834",
+              "835",
+              "836",
+              "837",
+              "838",
+              "839",
+              "840",
+              "841",
+              "842",
+              "843",
+              "844",
+              "845",
+              "846",
+              "847",
+              "848",
+              "849",
+              "850",
+              "851",
+              "852",
+              "853",
+              "854",
+              "855",
+              "856",
+              "857",
+              "858",
+              "859",
+              "860",
+              "861",
+              "862",
+              "863",
+              "864",
+              "865",
+              "866",
+              "867",
+              "868",
+              "869",
+              "870",
+              "871",
+              "872",
+              "873",
+              "874",
+              "875",
+              "876",
+              "877",
+              "878",
+              "879",
+              "880",
+              "881",
+              "882",
+              "883",
+              "884",
+              "885",
+              "886",
+              "887",
+              "888",
+              "889",
+              "890",
+              "891",
+              "892",
+              "893",
+              "894",
+              "895",
+              "896",
+              "897",
+              "898",
+              "899",
+              "900",
+              "901",
+              "902",
+              "903",
+              "904",
+              "905",
+              "906",
+              "907",
+              "908",
+              "909",
+              "910",
+              "911",
+              "912",
+              "913",
+              "914",
+              "915",
+              "916",
+              "917",
+              "918",
+              "919",
+              "920",
+              "921",
+              "922",
+              "923",
+              "924",
+              "925",
+              "926",
+              "927",
+              "928",
+              "929",
+              "930",
+              "931",
+              "932",
+              "933",
+              "934",
+              "935",
+              "936",
+              "937",
+              "938",
+              "939",
+              "940",
+              "941",
+              "942",
+              "943",
+              "944",
+              "945",
+              "946",
+              "947",
+              "948",
+              "949",
+              "950",
+              "951",
+              "952",
+              "953",
+              "954",
+              "955",
+              "956",
+              "957",
+              "958",
+              "959",
+              "960",
+              "961",
+              "962",
+              "963",
+              "964",
+              "965",
+              "966",
+              "967",
+              "968",
+              "969",
+              "970",
+              "971",
+              "972",
+              "973",
+              "974",
+              "975",
+              "976",
+              "977",
+              "978",
+              "979",
+              "980",
+              "981",
+              "982",
+              "983",
+              "984",
+              "985",
+              "986",
+              "987",
+              "988",
+              "989",
+              "990",
+              "991",
+              "992",
+              "993",
+              "994",
+              "995",
+              "996",
+              "997",
+              "998",
+              "999"
+            ]
+          },
+          "message": {
+            "description": "Message for the event.",
+            "type": "string",
+            "example": "Package arrived at the warehouse."
+          },
+          "waitingMinutes": {
+            "description": "Waiting time in minutes.",
+            "type": "number"
+          },
+          "emittedBy": {
+            "description": "Id of executive partner",
+            "type": "string"
+          },
+          "nameOfSigner": {
+            "description": "Name of signer.",
+            "type": "string"
+          },
+          "vehicleLatitude": {
+            "description": "Latitude of coordinates.",
+            "type": "number"
+          },
+          "vehicleLongitude": {
+            "description": "Longitude of coordinates.",
+            "type": "number"
+          },
+          "estimatedCollectionAtFrom": {
+            "description": "Date and time of collection from happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedCollectionAtUntil": {
+            "description": "Date and time of collection until happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedArrivalAtFrom": {
+            "description": "Date and time of arrival from happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedArrivalAtUntil": {
+            "description": "Date and time of arrival until happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "stopsUntilCollection": {
+            "description": "Stops until collection.",
+            "type": "number"
+          },
+          "stopsUntilDelivery": {
+            "description": "Stops until delivery.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "originatedAt",
+          "code",
+          "estimatedCollectionAtFrom",
+          "estimatedCollectionAtUntil",
+          "estimatedArrivalAtFrom",
+          "estimatedArrivalAtUntil"
+        ]
+      },
+      "StatusEvent": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "description": "Sequence of status event.",
+            "type": "number"
+          },
+          "orderId": {
+            "type": "string",
+            "example": "id of an order."
+          },
+          "carrierReference": {
+            "type": "string",
+            "example": "Reference of carrier."
+          },
+          "statusCode": {
+            "description": "Status code of event.",
+            "type": "string",
+            "enum": [
+              "5X0",
+              "-1",
+              "00",
+              "01",
+              "02",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "08",
+              "10",
+              "14",
+              "16",
+              "17",
+              "20",
+              "21",
+              "22",
+              "28",
+              "29",
+              "30",
+              "33",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "49",
+              "50",
+              "51",
+              "52",
+              "54",
+              "57",
+              "60",
+              "61",
+              "62",
+              "63",
+              "65",
+              "67",
+              "68",
+              "70",
+              "80",
+              "81",
+              "91",
+              "92",
+              "93",
+              "95",
+              "98",
+              "99",
+              "100",
+              "300",
+              "301",
+              "302",
+              "303",
+              "304",
+              "305",
+              "400",
+              "401",
+              "410",
+              "411",
+              "420",
+              "421",
+              "422",
+              "423",
+              "424",
+              "430",
+              "431",
+              "432",
+              "433",
+              "434",
+              "442",
+              "453",
+              "470",
+              "471",
+              "472",
+              "473",
+              "474",
+              "500",
+              "510",
+              "521",
+              "522",
+              "523",
+              "526",
+              "527",
+              "528",
+              "529",
+              "533",
+              "540",
+              "549",
+              "550",
+              "552",
+              "570",
+              "571",
+              "618",
+              "619",
+              "620",
+              "621",
+              "622",
+              "623",
+              "624",
+              "625",
+              "626",
+              "627",
+              "628",
+              "632",
+              "633",
+              "634",
+              "636",
+              "637",
+              "638",
+              "640",
+              "641",
+              "644",
+              "645",
+              "646",
+              "647",
+              "648",
+              "649",
+              "650",
+              "651",
+              "652",
+              "654",
+              "655",
+              "656",
+              "657",
+              "658",
+              "659",
+              "660",
+              "661",
+              "663",
+              "664",
+              "665",
+              "666",
+              "667",
+              "668",
+              "669",
+              "670",
+              "672",
+              "674",
+              "679",
+              "681",
+              "682",
+              "683",
+              "684",
+              "685",
+              "686",
+              "687",
+              "688",
+              "689",
+              "690",
+              "691",
+              "692",
+              "693",
+              "694",
+              "695",
+              "696",
+              "697",
+              "698",
+              "699",
+              "701",
+              "702",
+              "703",
+              "704",
+              "705",
+              "706",
+              "707",
+              "708",
+              "709",
+              "710",
+              "711",
+              "712",
+              "713",
+              "714",
+              "715",
+              "716",
+              "717",
+              "718",
+              "719",
+              "720",
+              "721",
+              "722",
+              "723",
+              "724",
+              "725",
+              "726",
+              "727",
+              "728",
+              "729",
+              "730",
+              "731",
+              "732",
+              "733",
+              "734",
+              "735",
+              "736",
+              "737",
+              "738",
+              "739",
+              "740",
+              "741",
+              "742",
+              "743",
+              "744",
+              "745",
+              "746",
+              "747",
+              "748",
+              "749",
+              "750",
+              "751",
+              "752",
+              "753",
+              "754",
+              "755",
+              "756",
+              "761",
+              "762",
+              "763",
+              "764",
+              "765",
+              "766",
+              "767",
+              "768",
+              "769",
+              "770",
+              "771",
+              "772",
+              "773",
+              "774",
+              "775",
+              "776",
+              "777",
+              "778",
+              "779",
+              "780",
+              "781",
+              "783",
+              "785",
+              "787",
+              "789",
+              "790",
+              "791",
+              "792",
+              "793",
+              "794",
+              "795",
+              "796",
+              "797",
+              "798",
+              "799",
+              "800",
+              "801",
+              "802",
+              "803",
+              "804",
+              "805",
+              "806",
+              "807",
+              "808",
+              "809",
+              "810",
+              "811",
+              "812",
+              "813",
+              "814",
+              "815",
+              "816",
+              "817",
+              "818",
+              "819",
+              "820",
+              "821",
+              "822",
+              "823",
+              "824",
+              "825",
+              "826",
+              "827",
+              "828",
+              "829",
+              "830",
+              "831",
+              "832",
+              "833",
+              "834",
+              "835",
+              "836",
+              "837",
+              "838",
+              "839",
+              "840",
+              "841",
+              "842",
+              "843",
+              "844",
+              "845",
+              "846",
+              "847",
+              "848",
+              "849",
+              "850",
+              "851",
+              "852",
+              "853",
+              "854",
+              "855",
+              "856",
+              "857",
+              "858",
+              "859",
+              "860",
+              "861",
+              "862",
+              "863",
+              "864",
+              "865",
+              "866",
+              "867",
+              "868",
+              "869",
+              "870",
+              "871",
+              "872",
+              "873",
+              "874",
+              "875",
+              "876",
+              "877",
+              "878",
+              "879",
+              "880",
+              "881",
+              "882",
+              "883",
+              "884",
+              "885",
+              "886",
+              "887",
+              "888",
+              "889",
+              "890",
+              "891",
+              "892",
+              "893",
+              "894",
+              "895",
+              "896",
+              "897",
+              "898",
+              "899",
+              "900",
+              "901",
+              "902",
+              "903",
+              "904",
+              "905",
+              "906",
+              "907",
+              "908",
+              "909",
+              "910",
+              "911",
+              "912",
+              "913",
+              "914",
+              "915",
+              "916",
+              "917",
+              "918",
+              "919",
+              "920",
+              "921",
+              "922",
+              "923",
+              "924",
+              "925",
+              "926",
+              "927",
+              "928",
+              "929",
+              "930",
+              "931",
+              "932",
+              "933",
+              "934",
+              "935",
+              "936",
+              "937",
+              "938",
+              "939",
+              "940",
+              "941",
+              "942",
+              "943",
+              "944",
+              "945",
+              "946",
+              "947",
+              "948",
+              "949",
+              "950",
+              "951",
+              "952",
+              "953",
+              "954",
+              "955",
+              "956",
+              "957",
+              "958",
+              "959",
+              "960",
+              "961",
+              "962",
+              "963",
+              "964",
+              "965",
+              "966",
+              "967",
+              "968",
+              "969",
+              "970",
+              "971",
+              "972",
+              "973",
+              "974",
+              "975",
+              "976",
+              "977",
+              "978",
+              "979",
+              "980",
+              "981",
+              "982",
+              "983",
+              "984",
+              "985",
+              "986",
+              "987",
+              "988",
+              "989",
+              "990",
+              "991",
+              "992",
+              "993",
+              "994",
+              "995",
+              "996",
+              "997",
+              "998",
+              "999"
+            ]
+          },
+          "originatedAt": {
+            "description": "Date and time when status event happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "message": {
+            "description": "Additional message for the event.",
+            "type": "string",
+            "example": "Package arrived at the warehouse."
+          },
+          "shipmentWeight": {
+            "description": "Weight of shipment.",
+            "type": "number",
+            "example": "10"
+          },
+          "shipmentLoadingMeters": {
+            "description": "Loading meters of shipment.",
+            "type": "number",
+            "example": 4
+          },
+          "waitingMinutes": {
+            "description": "Waiting time in minutes.",
+            "type": "number"
+          },
+          "emittedBy": {
+            "description": "Id of executive partner",
+            "type": "string"
+          },
+          "nameOfSigner": {
+            "description": "Name of signer.",
+            "type": "string"
+          },
+          "vehicleLatitude": {
+            "description": "Latitude of coordinates.",
+            "type": "number"
+          },
+          "vehicleLongitude": {
+            "description": "Longitude of coordinates.",
+            "type": "number"
+          },
+          "estimatedCollectionAtFrom": {
+            "description": "Date and time of collection from happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedCollectionAtUntil": {
+            "description": "Date and time of collection until happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedArrivalAtFrom": {
+            "description": "Date and time of arrival from happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "estimatedArrivalAtUntil": {
+            "description": "Date and time of arrival until happened.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-18T08:00:00Z"
+          },
+          "stopsUntilCollection": {
+            "description": "Stops until collection.",
+            "type": "number"
+          },
+          "stopsUntilDelivery": {
+            "description": "Stops until delivery.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "carrierReference",
+          "statusCode",
+          "originatedAt",
+          "estimatedCollectionAtFrom",
+          "estimatedCollectionAtUntil",
+          "estimatedArrivalAtFrom",
+          "estimatedArrivalAtUntil"
+        ]
+      },
+      "ResponseGetTrackingAndOrderData": {
+        "type": "object",
+        "properties": {
+          "trackingSteps": {
+            "description": "Steps of the tracking",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackingStep"
+            }
+          },
+          "statusEventHistory": {
+            "description": "Historic status events of the tracking",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackingStatus"
+            }
+          },
+          "order": {
+            "description": "Related order",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Order"
+              }
+            ]
+          }
+        },
+        "required": [
+          "trackingSteps",
+          "statusEventHistory",
+          "order"
+        ]
+      },
+      "FindManyTrackingEventsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Tracking events.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusEvent"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          },
+          "total": {
+            "description": "Total number of tracking events.",
+            "type": "number"
+          }
+        }
+      },
+      "ResponseGetTrackingData": {
+        "type": "object",
+        "properties": {
+          "trackingSteps": {
+            "description": "Steps of the tracking",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackingStep"
+            }
+          },
+          "statusEventHistory": {
+            "description": "Historic status events of the tracking",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackingStatus"
+            }
+          }
+        },
+        "required": [
+          "trackingSteps",
+          "statusEventHistory"
+        ]
+      },
+      "ConsignmentLevelEventValue": {
+        "type": "object",
+        "properties": {
+          "Origin": {
+            "type": "string",
+            "example": "vehicle xyz"
+          },
+          "String": {
+            "type": "string",
+            "example": "Unload finished"
+          },
+          "DateTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-08-23T12:42:20.159Z"
+          },
+          "Date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-08-23T12:42:20.159Z"
+          },
+          "DateTimeFrom": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-08-23T12:42:20.159Z"
+          },
+          "DateTimeUntil": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-08-23T12:42:20.159Z"
+          },
+          "CompanyNumber": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "PickupOrderNo": {
+            "description": "Place for order reference.",
+            "type": "string",
+            "example": "10000027"
+          },
+          "RefNumber": {
+            "type": "string",
+            "example": "123456"
+          },
+          "Weight": {
+            "type": "number",
+            "example": 30
+          }
+        }
+      },
+      "GeoPosition": {
+        "type": "object",
+        "properties": {
+          "Latitude": {
+            "type": "number",
+            "example": "53.11019972"
+          },
+          "Longitude": {
+            "type": "number",
+            "example": "8.805125"
+          }
+        },
+        "required": [
+          "Latitude",
+          "Longitude"
+        ]
+      },
+      "ConsignmentLevelEvent": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "example": "22"
+          },
+          "DateTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-08-23T12:42:20.159Z"
+          },
+          "Label": {
+            "type": "string",
+            "example": "Cargo X"
+          },
+          "Value": {
+            "$ref": "#/components/schemas/ConsignmentLevelEventValue"
+          },
+          "GeoPosition": {
+            "$ref": "#/components/schemas/GeoPosition"
+          },
+          "NameOfSigner": {
+            "type": "string",
+            "example": "Gal Anonymous"
+          },
+          "WaitTimeMinutes": {
+            "type": "string",
+            "example": "10"
+          }
+        },
+        "required": [
+          "DateTime"
+        ]
+      },
+      "ConsignmentLevelError": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "Text": {
+            "type": "string",
+            "example": "Could not continue..."
+          }
+        }
+      },
+      "WorkflowInformation": {
+        "type": "object",
+        "properties": {
+          "RequestCode": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "RequestIndex": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "ResponseIndex": {
+            "type": "string",
+            "example": "123456789"
+          }
+        },
+        "required": [
+          "RequestCode"
+        ]
+      },
+      "ConsignmentLevel": {
+        "type": "object",
+        "properties": {
+          "ObjectId": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "ConsignmentObjectRef": {
+            "description": "Place Cepra object id [CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC] here.",
+            "type": "string",
+            "example": "6f78f5e0-40bb-4dd3-bc14-bedc3d28ba69"
+          },
+          "ConsignmentNoContractedPartner": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "ConsignmentNoDeliveringPartner": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "ConsignmentNoOrderingPartner": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "PickupOrderNo": {
+            "description": "Place Cargoboard order reference [1CCCCCCC] or Cepra object id [CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC] here.",
+            "type": "string",
+            "example": "10367044"
+          },
+          "RefNo": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "Event": {
+            "$ref": "#/components/schemas/ConsignmentLevelEvent"
+          },
+          "AdditionalText": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "something else to add..."
+            ]
+          },
+          "Errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConsignmentLevelError"
+            }
+          },
+          "WorkflowInformation": {
+            "$ref": "#/components/schemas/WorkflowInformation"
+          },
+          "DeliveryObjectRef": {
+            "description": "Place Cargoboard order reference [1CCCCCCC] or Cepra object id [CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC] here.",
+            "type": "string",
+            "example": "10367044"
+          }
+        },
+        "required": [
+          "ConsignmentNoContractedPartner",
+          "Event"
+        ]
+      },
+      "ScanPoint": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "Label": {
+            "type": "string",
+            "example": "123456789"
+          }
+        },
+        "required": [
+          "Code"
+        ]
+      },
+      "Event": {
+        "type": "object"
+      },
+      "AdditionalInformation": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "example": "22"
+          },
+          "Label": {
+            "type": "string",
+            "example": "Delivery X"
+          }
+        }
+      },
+      "BarcodeLevelError": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "Text": {
+            "type": "string",
+            "example": "Could not continue..."
+          }
+        }
+      },
+      "BarcodeLevel": {
+        "type": "object",
+        "properties": {
+          "ObjectId": {
+            "type": "string",
+            "example": "123456"
+          },
+          "ConsignmentObjectRef": {
+            "type": "string",
+            "example": "6f78f5e0-40bb-4dd3-bc14-bedc3d28ba69"
+          },
+          "ConsignmentNoOrderingPartner": {
+            "type": "string",
+            "example": "ABC123"
+          },
+          "SSCC": {
+            "type": "string",
+            "example": "1234564789"
+          },
+          "ScanPoint": {
+            "$ref": "#/components/schemas/ScanPoint"
+          },
+          "Event": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "AdditionalInformation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalInformation"
+            }
+          },
+          "Errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BarcodeLevelError"
+            }
+          }
+        }
+      },
+      "ResponseGetOrders": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Orders.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/HateoasLink"
+          },
+          "total": {
+            "description": "Total number of orders.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "X-API-KEY": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Cargoboard",
+      "description": "Cargoboard is a freight forwarding platform for Europe."
+    }
+  ],
+  "externalDocs": {
+    "description": "Documentation for customers.",
+    "url": "https://docs.cargoboard.com"
+  },
+  "x-readme": {
+    "explorer-enabled": true,
+    "proxy-enabled": true
+  }
+}

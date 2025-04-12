@@ -1,0 +1,67 @@
+# # OrderForCustomer
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**product** | **string** | The product for which a quotation should be received. Possible values: DIRECT, EXPRESS, EXPRESS_8, EXPRESS_10, EXPRESS_12, EXPRESS_16, FIX, FIX_8, FIX_10, FIX_12, FIX_16, STANDARD. |
+**transport_type** | **string** | Transport type of order. Possible values GROUPAGE, PART_LOAD, DIRECT | [optional]
+**customer_order_code** | **string** | A code applied by customer that will appear on documents as CustomerOrderNo | [optional]
+**coupon_code** | **string** | A code applied by customer that will allow for special actions like discount etc. | [optional]
+**wants_export_declaration** | **bool** | A service where shipment will be declared for customs. Some customers do this by themselves and others book this option. This service should be only possible if shipment goes to, or comes from a country outside of the EU, like Great Britain, Norway, Switzerland. | [optional] [default to false]
+**wants_climate_neutral_shipment** | **bool** | Negative environmental impact will be reduced for this service. | [optional] [default to true]
+**wants_insurance** | **bool** | Cargoboard will organize an insurance for this shipment. goodsValueAmount is necessary if you set wantsInsurance | [optional] [default to false]
+**incoterm** | **string** | Incoterm - should always be STANDARD and if you ship to Switzerland, or UK it should be DAP | [optional]
+**is_supplying_company_or_receiving_customer** | **bool** | If true customer is supplying company or receiving customer | [optional]
+**shipper** | [**\kruegge82\cargoboard\Model\ShipperOrder**](ShipperOrder.md) |  |
+**consignee** | [**\kruegge82\cargoboard\Model\ConsigneeOrder**](ConsigneeOrder.md) |  |
+**value_of_goods_amount** | **float** | Amount of money - value of goods for insurance or customs | [optional]
+**value_of_goods_currency** | **string** | Currency of value of goods. Possible values EUR | [optional]
+**lines** | [**\kruegge82\cargoboard\Model\LineOrder[]**](LineOrder.md) | Line for a product. |
+**id** | **string** | Id of order. | [optional]
+**sequence** | **float** | Sequence of order. | [optional]
+**status** | **string** | Status of order. Possible values INITIALIZED, CREATED, WAITING_FOR_PAYMENT, CANCELLED | [optional]
+**customer_id** | **string** | Id of customer. | [optional]
+**quotation_id** | **string** | Id of quotation. | [optional]
+**reference** | **string** | Reference of order. | [optional]
+**order_key_eikona** | **string** | Order key eikona | [optional]
+**order_id_eikona** | **string** | Order id eikona | [optional]
+**payment_process_id** | **string** | Payment process id. | [optional]
+**payment_method** | **string** | Payment methods of order. Possible values INVOICE, SEPA, PAY_PAL, GIROPAY, CREDIT_CARD, DIRECT_DEBIT, PREPAYMENT, NO_PAYMENT | [optional]
+**refund_type** | **string** | RefundType of order. Possible values FULL, PARTIAL, NO | [optional]
+**is_easybill_invoicing_active** | **bool** | Is Easybill invoicing active. | [optional]
+**is_confirmation_needed** | **bool** | Is confirmation needed. | [optional]
+**is_confirmed** | **bool** | Is confirmed. | [optional]
+**confirmed_at** | **\DateTime** | Date of confirmation of order | [optional]
+**is_acceptance_needed** | **bool** | Is acceptance needed. | [optional]
+**is_accepted** | **bool** | Is accepted. | [optional]
+**accepted_at** | **\DateTime** | Date of acceptance of order | [optional]
+**easybill_invoices** | [**\kruegge82\cargoboard\Model\EasybillInvoice[]**](EasybillInvoice.md) |  | [optional]
+**runtime_days_min** | **float** | Runtime days minimum. | [optional]
+**runtime_days_max** | **float** | Runtime days maximum. | [optional]
+**price_amount** | **float** | Price amount. | [optional]
+**price_currency** | **string** | Price currency. Possible values EUR | [optional]
+**price_amount_standard** | **float** | Price amount standard. | [optional]
+**price_currency_standard** | **string** | Price currency standard. Possible values EUR | [optional]
+**placed_at** | **\DateTime** | Date of order placement | [optional]
+**created_at** | **\DateTime** | Date of creation of order | [optional]
+**updated_at** | **\DateTime** | Date of update of order | [optional]
+**truck_type** | **string** | Truck type of order. Possible values DIRECT_BUS_PLANE, DIRECT_BUS_PLANE_XXL, DIRECT_TRUCK_7_5, DIRECT_TRUCK_12, DIRECT_TRUCK_40 | [optional]
+**domain** | **string** | Domain | [optional]
+**shipping_partner** | **string** | Shipping partner | [optional]
+**delivering_partner** | **string** | Shipping partner | [optional]
+**shipment_status** | **string** | Shipment status of order. Possible values CREATED, IN_DISPOSITION, COLLECTED, TRANSIT, DELIVERED, ACTION_REQUIRED, CANCELLED, IN_DELIVERY, SCHEDULED, WAITING_FOR_CUSTOMER, CUSTOMS_CLEARANCE, MISSING_INFORMATION, ALL_DOCUMENTS_PRESENT | [optional]
+**tariff_category** | **string** | Tariff category of order. Possible values A, B, C | [optional]
+**lines_weight** | **float** | Lines weight of quotation. | [optional]
+**lines_volume** | **float** | Lines volume of quotation. | [optional]
+**lines_pallet_bays** | **float** | Lines pallet bays of quotation. | [optional]
+**lines_loading_meter** | **float** | Lines loading meter of quotation. | [optional]
+**co2_emission_amount** | **float** | CO2 Emission amount of quotation. | [optional]
+**co2_emission_value** | **float** | CO2 Emission value of quotation. | [optional]
+**co2_emission_unit** | **string** | CO2 Emission unit of quotation. | [optional]
+**actual_price** | **float** | Actual price of order. | [optional]
+**actual_price_standard** | **float** | Actual standard price of order. | [optional]
+**gross_actual_price** | **float** | Gross actual price of order. | [optional]
+**cost_items** | [**\kruegge82\cargoboard\Model\CostItemOrderForCustomer[]**](CostItemOrderForCustomer.md) |  | [optional]
+
+[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
