@@ -1302,6 +1302,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -1867,6 +1868,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -3028,6 +3030,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -3601,6 +3604,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
