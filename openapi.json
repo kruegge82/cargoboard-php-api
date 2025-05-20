@@ -762,7 +762,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Return tracking information.",
             "content": {
               "application/json": {
@@ -1302,6 +1302,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -1867,6 +1868,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -3028,6 +3030,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -3601,6 +3604,7 @@
             "type": "string",
             "example": "PICKUP_ADVISE",
             "enum": [
+              "PALLET",
               "PICKUP_ADVISE",
               "DELIVERY_ADVISE",
               "PHONE_CALL_FROM_DRIVER_BEFORE_PICKUP",
@@ -5679,25 +5683,26 @@
       "ResponseGetTrackingData": {
         "type": "object",
         "properties": {
-          "trackingSteps": {
-            "description": "Steps of the tracking",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TrackingStep"
-            }
+          "data": {
+            "type": "object",
+            "properties": {
+              "trackingSteps": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/TrackingStep" }
+              },
+              "statusEventHistory": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/TrackingStatus" }
+              }
+            },
+            "required": ["trackingSteps", "statusEventHistory"]
           },
-          "statusEventHistory": {
-            "description": "Historic status events of the tracking",
+          "links": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TrackingStatus"
-            }
+            "items": { "$ref": "#/components/schemas/HateoasLink" }
           }
         },
-        "required": [
-          "trackingSteps",
-          "statusEventHistory"
-        ]
+        "required": ["data"]
       },
       "ConsignmentLevelEventValue": {
         "type": "object",

@@ -1,5 +1,7 @@
 # kruegge82\cargoboard\InvoicesApi
 
+
+
 All URIs are relative to https://api-sandbox.cargoboard.com, except if the operation defines another base path.
 
 | Method | HTTP request | Description |
